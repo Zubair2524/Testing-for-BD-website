@@ -3,126 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shaigan Pharma - BD Database</title>
+    <title>Shaigan BD Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --primary-blue: #1976d2;
-            --accent-green: #43a047;
-            --text-main: #e3f2fd;
+            --shaigan-blue: #0a4d92;
+            --shaigan-silver: #a7a9ac;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --accent-green: #2ecc71;
+            --text-light: #f8f9fa;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(180deg, #0a1929 0%, #1a2332 100%);
+            background: radial-gradient(circle at top right, #1a2a6c, #1a2332, #0a0e14);
             background-attachment: fixed;
+            color: var(--text-light);
             min-height: 100vh;
-            padding: 20px;
-            color: var(--text-main);
+            padding: 15px;
         }
 
-        .container { max-width: 1600px; margin: 0 auto; }
+        /* Header & Logo */
+        .brand-section { text-align: center; margin-bottom: 30px; animation: fadeIn 1s ease-out; }
+        .logo-img { height: 80px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        h1 { font-size: 2.2rem; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
+        .sub-heading { color: var(--accent-green); font-weight: 600; font-size: 0.9rem; letter-spacing: 3px; margin-top: 5px; }
 
-        /* Header */
-        .header { text-align: center; margin-bottom: 30px; }
-        .feature-badge { background: linear-gradient(135deg, var(--accent-green), #66bb6a); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.85em; font-weight: 700; margin: 5px; display: inline-block; }
+        /* KPI Grid */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .kpi-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .kpi-card i { font-size: 1.5rem; margin-bottom: 10px; color: var(--accent-green); }
+        .kpi-val { display: block; font-size: 1.8rem; font-weight: 800; }
+        .kpi-lab { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; letter-spacing: 1px; }
 
-        /* Search & Filters */
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 25px; }
-        .search-row { display: flex; gap: 15px; flex-wrap: wrap; }
-        .search-input { flex: 2; min-width: 300px; padding: 15px; border-radius: 12px; border: none; font-size: 1em; }
-        .filter-select { flex: 1; padding: 15px; border-radius: 12px; border: none; background: rgba(255,255,255,0.1); color: white; font-weight: 600; cursor: pointer; }
-        .filter-select option { background: #1a2332; }
-
-        /* Stats */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: rgba(25, 118, 210, 0.1); border: 1px solid rgba(100, 181, 246, 0.2); border-radius: 16px; padding: 15px; text-align: center; }
-        .stat-number { font-size: 2em; font-weight: 800; display: block; }
-        .stat-label { font-size: 0.7em; text-transform: uppercase; color: #b0bec5; }
-
-        /* Results */
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
-        .product-card { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 18px; padding: 20px; transition: 0.3s; position: relative; }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--primary-blue); }
+        /* Filters */
+        .filter-bar {
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .search-box { flex: 2; min-width: 250px; position: relative; }
+        .search-box input { 
+            width: 100%; padding: 12px 40px; border-radius: 10px; border: none; 
+            background: rgba(255,255,255,0.9); color: #333; font-size: 1rem;
+        }
+        .search-box i { position: absolute; left: 15px; top: 14px; color: #666; }
         
-        .product-name { font-size: 1.2em; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 10px; }
-        .info-label { font-size: 0.65em; color: #90caf9; text-transform: uppercase; margin-top: 10px; font-weight: 800; }
-        .info-value { font-size: 0.9em; margin-bottom: 5px; }
-        
-        .badge-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 15px; }
-        .badge { padding: 4px 10px; border-radius: 5px; font-size: 0.7em; font-weight: 800; background: rgba(25, 118, 210, 0.2); border: 1px solid rgba(25, 118, 210, 0.3); }
+        .select-filter { 
+            flex: 1; min-width: 150px; padding: 12px; border-radius: 10px; 
+            background: #1a2332; color: white; border: 1px solid var(--glass-border);
+        }
+        .btn-clear { 
+            padding: 12px 20px; border-radius: 10px; background: #e74c3c; 
+            color: white; border: none; cursor: pointer; font-weight: 600;
+        }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; text-decoration: none; text-align: center; font-size: 0.85em; }
-        .btn-edit { background: var(--primary-blue); color: white; }
-        .btn-google { background: #4285f4; color: white; }
+        /* Product Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .p-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 20px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .p-card:hover { transform: translateY(-5px); border-color: var(--accent-green); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        
+        .p-title { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .p-title i { color: var(--accent-green); }
+
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+        .label { opacity: 0.6; font-weight: 500; }
+        .value { font-weight: 600; text-align: right; color: #d1d8e0; }
+
+        .detail-section { display: none; margin-top: 15px; padding-top: 15px; border-top: 2px dashed rgba(255,255,255,0.1); animation: slideDown 0.3s ease; }
+        
+        .btn-group { display: flex; gap: 8px; margin-top: 20px; }
+        .btn-action { 
+            flex: 1; padding: 10px; border-radius: 8px; border: none; 
+            font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .btn-detail { background: rgba(255,255,255,0.1); color: white; }
+        .btn-edit { background: var(--shaigan-blue); color: white; }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; overflow-y: auto; }
-        .modal.show { display: flex; }
-        .modal-content { background: #1e3a5f; padding: 30px; border-radius: 20px; width: 90%; max-width: 700px; margin: 20px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-row { margin-bottom: 15px; }
-        .form-row.full { grid-column: span 2; }
-        .form-row label { display: block; margin-bottom: 5px; color: #90caf9; font-size: 0.75em; font-weight: 700; }
-        .form-row input, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #0a1929; color: white; }
-        .save-btn { width: 100%; padding: 15px; background: var(--accent-green); color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; }
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 2000; padding: 20px; overflow-y: auto;
+        }
+        .modal-content { 
+            background: #1e272e; max-width: 800px; margin: auto; border-radius: 20px; 
+            padding: 30px; border: 1px solid var(--accent-green);
+        }
+        .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .edit-grid { grid-template-columns: 1fr; } }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Status Badge */
+        .live-sync { font-size: 0.6rem; color: var(--accent-green); display: flex; align-items: center; gap: 5px; justify-content: center; }
+        .pulse { width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>🧬 Shaigan Pharma BD Portal</h1>
-        <div class="feature-badges">
-            <span class="feature-badge">DATABASE ACTIVE</span>
-            <span class="feature-badge">RECORDS: <span id="syncTotal">0</span></span>
+    <div class="brand-section">
+        <img src="https://i.ibb.co/qY7z8yY/Shaigan-Logo.png" alt="Shaigan Logo" class="logo-img">
+        <h1>Business Development Portal</h1>
+        <div class="sub-heading">R&D | REGULATORY | BUSINESS DEVELOPMENT</div>
+    </div>
+
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <i class="fas fa-boxes-stacked"></i>
+            <span class="kpi-val" id="totalCount">0</span>
+            <span class="kpi-lab">Total Products</span>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-filter"></i>
+            <span class="kpi-val" id="matchCount">0</span>
+            <span class="kpi-lab">Current Displayed</span>
+        </div>
+        <div class="kpi-card" onclick="location.reload()" style="cursor:pointer">
+            <i class="fas fa-sync-alt"></i>
+            <div class="live-sync"><div class="pulse"></div> LIVE SYNC ACTIVE</div>
+            <span class="kpi-lab">Tap to Refresh</span>
         </div>
     </div>
 
-    <div class="glass-card">
-        <div class="search-row">
-            <input type="text" id="mainSearch" class="search-input" placeholder="Search product, composition, indication...">
-            <select id="filterTeam" class="filter-select"><option value="">All Teams</option></select>
-            <select id="filterForm" class="filter-select"><option value="">All Forms</option></select>
+    <div class="filter-bar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="mainSearch" placeholder="Search product, composition, therapy...">
+        </div>
+        <select id="filterTeam" class="select-filter"><option value="">All Teams</option></select>
+        <select id="filterNote" class="select-filter"><option value="">Special Note</option></select>
+        <button class="btn-clear" onclick="clearFilters()"><i class="fas fa-eraser"></i> Clear</button>
+    </div>
+
+    <div id="productGrid" class="grid">
+        <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+            <i class="fas fa-spinner fa-spin fa-3x"></i><br><br>Fetching Global Database...
         </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card"><span class="stat-number" id="statFiltered">0</span><span class="stat-label">Matching Products</span></div>
-        <div class="stat-card"><span class="stat-number" id="statGrowth">0%</span><span class="stat-label">Avg Value Growth</span></div>
-    </div>
-
-    <div id="productGrid" class="results-grid"><div style="text-align:center; padding: 50px; width:100%;">📡 Syncing with Cloud...</div></div>
-</div>
-
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <h2 style="margin-bottom:20px;">Update Product Record</h2>
-        <div class="form-grid">
-            <div class="form-row"><label>Product Name</label><input type="text" id="mName" readonly></div>
-            <div class="form-row"><label>Composition</label><input type="text" id="mComp"></div>
-            <div class="form-row"><label>Team</label><input type="text" id="mTeam"></div>
-            <div class="form-row"><label>Dosage Form</label><input type="text" id="mForm"></div>
-            <div class="form-row"><label>MAT Value</label><input type="text" id="mMAT"></div>
-            <div class="form-row"><label>Value Growth (%)</label><input type="text" id="mGrowth"></div>
-            <div class="form-row"><label>Unit Sale</label><input type="text" id="mUnit"></div>
-            <div class="form-row"><label>Registration Status</label><input type="text" id="mReg"></div>
-            <div class="form-row full"><label>Indication</label><textarea id="mInd" rows="2"></textarea></div>
-            <div class="form-row full"><label>Special Note</label><textarea id="mNote" rows="2"></textarea></div>
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:20px; color: var(--accent-green);"><i class="fas fa-user-shield"></i> Secure Edit Mode</h2>
+            <div class="edit-grid" id="editFormFields">
+                </div>
+            <div style="margin-top:25px; display:flex; gap:10px;">
+                <button class="btn-action btn-edit" onclick="submitData()" style="padding:15px">Save Changes</button>
+                <button class="btn-action btn-detail" onclick="closeModal()" style="padding:15px">Cancel</button>
+            </div>
         </div>
-        <button class="save-btn" onclick="submitData()">Save Changes to Cloud</button>
-        <button onclick="closeModal()" style="width:100%; background:none; color:white; border:none; margin-top:10px; cursor:pointer;">Cancel</button>
     </div>
-</div>
 
 <script>
-    // 1. UPDATE THIS URL WITH YOUR NEW DEPLOYMENT URL
     const API_URL = "https://script.google.com/macros/s/AKfycbwm2u27sZNPQqyS5CV_-T3vYHrm0mC2du22Zk68sKKtozp-FLFFzXZKBItDxrPzwZdYiQ/exec";
-    
     let dbRaw = [];
     let dbFiltered = [];
 
@@ -134,103 +203,126 @@
             populateFilters();
             render();
         } catch (e) {
-            document.getElementById('productGrid').innerHTML = `<div style="color:red; text-align:center;">⚠️ Connection Error: Please ensure Web App is deployed as 'Anyone'.</div>`;
+            document.getElementById('productGrid').innerHTML = "Connection Error. Check Web App permissions.";
         }
     }
 
     function populateFilters() {
         const teams = [...new Set(dbRaw.map(x => x.TeamName).filter(Boolean))].sort();
-        const forms = [...new Set(dbRaw.map(x => x.DosageForm).filter(Boolean))].sort();
+        const notes = [...new Set(dbRaw.map(x => x.SpecialNote).filter(Boolean))].sort();
         const tSel = document.getElementById('filterTeam');
-        const fSel = document.getElementById('filterForm');
+        const nSel = document.getElementById('filterNote');
         teams.forEach(t => tSel.innerHTML += `<option value="${t}">${t}</option>`);
-        forms.forEach(f => fSel.innerHTML += `<option value="${f}">${f}</option>`);
+        notes.forEach(n => nSel.innerHTML += `<option value="${n}">${n}</option>`);
     }
 
     function render() {
         const grid = document.getElementById('productGrid');
-        document.getElementById('syncTotal').innerText = dbRaw.length;
-        document.getElementById('statFiltered').innerText = dbFiltered.length;
+        document.getElementById('totalCount').innerText = dbRaw.length;
+        document.getElementById('matchCount').innerText = dbFiltered.length;
 
-        grid.innerHTML = dbFiltered.slice(0, 40).map(p => `
-            <div class="product-card">
-                <div class="product-name">${p.ProductName}</div>
-                <div class="info-label">Composition</div>
-                <div class="info-value">${p.Composition}</div>
-                <div class="info-label">MAT Value / Growth</div>
-                <div class="info-value" style="color:#ffc107; font-weight:bold;">${p.MATValue} (${p.ValueGrowth || '0%'})</div>
-                <div class="info-label">Indication</div>
-                <div class="info-value">${p.Indication || 'N/A'}</div>
+        grid.innerHTML = dbFiltered.map((p, index) => `
+            <div class="p-card">
+                <div class="p-title"><i class="fas fa-capsules"></i> ${p.ProductName}</div>
                 
-                <div class="badge-row">
-                    <span class="badge">${p.TeamName || 'General'}</span>
-                    <span class="badge">${p.DosageForm || 'Form'}</span>
-                    <span class="badge">${p.RegistrationStatus || 'Active'}</span>
+                <div class="data-row"><span class="label">Composition</span><span class="value">${p.Composition}</span></div>
+                <div class="data-row"><span class="label">Team</span><span class="value">${p.TeamName}</span></div>
+                <div class="data-row"><span class="label">MAT Value</span><span class="value" style="color:var(--accent-green)">${p.MATValue}</span></div>
+
+                <div class="detail-section" id="detail-${index}">
+                    ${Object.entries(p).map(([key, val]) => `
+                        <div class="data-row">
+                            <span class="label">${key.replace(/([A-Z])/g, ' $1')}</span>
+                            <span class="value">${val || '-'}</span>
+                        </div>
+                    `).join('')}
                 </div>
 
                 <div class="btn-group">
-                    <a href="https://www.google.com/search?q=${p.ProductName}+pharma" target="_blank" class="btn btn-google">Search</a>
-                    <button onclick="openModal('${p.ProductName.replace(/'/g, "\\'")}')" class="btn btn-edit">Edit</button>
+                    <button class="btn-action btn-detail" id="btn-text-${index}" onclick="toggleDetail(${index})">
+                        <i class="fas fa-plus-circle"></i> Detailed Info
+                    </button>
+                    <button class="btn-action btn-edit" onclick="secureEdit('${p.ProductName.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
                 </div>
             </div>
         `).join('');
     }
 
+    function toggleDetail(idx) {
+        const div = document.getElementById(`detail-${idx}`);
+        const btn = document.getElementById(`btn-text-${idx}`);
+        if (div.style.display === 'block') {
+            div.style.display = 'none';
+            btn.innerHTML = '<i class="fas fa-plus-circle"></i> Detailed Info';
+        } else {
+            div.style.display = 'block';
+            btn.innerHTML = '<i class="fas fa-minus-circle"></i> Short Info';
+        }
+    }
+
+    function secureEdit(name) {
+        const pass = prompt("Enter Administration Password to edit:");
+        if (pass === "Abc123@") {
+            const p = dbRaw.find(x => x.ProductName === name);
+            const container = document.getElementById('editFormFields');
+            container.innerHTML = Object.entries(p).map(([key, val]) => `
+                <div style="margin-bottom:10px">
+                    <label style="font-size:12px; color:var(--accent-green)">${key}</label>
+                    <input type="text" id="edit_${key}" value="${val || ''}" 
+                    style="width:100%; padding:8px; background:#000; color:white; border:1px solid #444; border-radius:5px;"
+                    ${key === 'ProductName' ? 'readonly' : ''}>
+                </div>
+            `).join('');
+            document.getElementById('editModal').style.display = 'flex';
+        } else {
+            alert("Incorrect Password. Access Denied.");
+        }
+    }
+
+    async function submitData() {
+        const btn = document.querySelector('.btn-edit');
+        btn.innerText = "Syncing Data...";
+        const payload = {};
+        const inputs = document.querySelectorAll('[id^="edit_"]');
+        inputs.forEach(input => {
+            const key = input.id.replace('edit_', '');
+            payload[key] = input.value;
+        });
+
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        alert("Cloud Sync Successful!");
+        location.reload();
+    }
+
     function applyFilters() {
         const term = document.getElementById('mainSearch').value.toLowerCase();
         const team = document.getElementById('filterTeam').value;
-        const form = document.getElementById('filterForm').value;
+        const note = document.getElementById('filterNote').value;
 
         dbFiltered = dbRaw.filter(p => {
             const matchSearch = p.ProductName.toLowerCase().includes(term) || p.Composition.toLowerCase().includes(term);
             const matchTeam = !team || p.TeamName === team;
-            const matchForm = !form || p.DosageForm === form;
-            return matchSearch && matchTeam && matchForm;
+            const matchNote = !note || p.SpecialNote === note;
+            return matchSearch && matchTeam && matchNote;
         });
         render();
     }
 
-    function openModal(name) {
-        const p = dbRaw.find(x => x.ProductName === name);
-        document.getElementById('mName').value = p.ProductName;
-        document.getElementById('mComp').value = p.Composition;
-        document.getElementById('mTeam').value = p.TeamName;
-        document.getElementById('mForm').value = p.DosageForm;
-        document.getElementById('mMAT').value = p.MATValue;
-        document.getElementById('mGrowth').value = p.ValueGrowth;
-        document.getElementById('mUnit').value = p.UnitSale;
-        document.getElementById('mReg').value = p.RegistrationStatus;
-        document.getElementById('mInd').value = p.Indication;
-        document.getElementById('mNote').value = p.SpecialNote;
-        document.getElementById('editModal').classList.add('show');
+    function clearFilters() {
+        document.getElementById('mainSearch').value = "";
+        document.getElementById('filterTeam').value = "";
+        document.getElementById('filterNote').value = "";
+        dbFiltered = [...dbRaw];
+        render();
     }
 
-    function closeModal() { document.getElementById('editModal').classList.remove('show'); }
-
-    async function submitData() {
-        const btn = document.querySelector('.save-btn');
-        btn.innerText = "Syncing...";
-        const payload = {
-            ProductName: document.getElementById('mName').value,
-            Composition: document.getElementById('mComp').value,
-            TeamName: document.getElementById('mTeam').value,
-            DosageForm: document.getElementById('mForm').value,
-            MATValue: document.getElementById('mMAT').value,
-            ValueGrowth: document.getElementById('mGrowth').value,
-            UnitSale: document.getElementById('mUnit').value,
-            RegistrationStatus: document.getElementById('mReg').value,
-            Indication: document.getElementById('mInd').value,
-            SpecialNote: document.getElementById('mNote').value
-        };
-
-        await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        alert("Update Sent! Refreshing dashboard...");
-        location.reload();
-    }
+    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
 
     document.getElementById('mainSearch').addEventListener('input', applyFilters);
     document.getElementById('filterTeam').addEventListener('change', applyFilters);
-    document.getElementById('filterForm').addEventListener('change', applyFilters);
+    document.getElementById('filterNote').addEventListener('change', applyFilters);
     window.onload = init;
 </script>
 </body>
