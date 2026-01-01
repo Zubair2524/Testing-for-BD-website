@@ -3,233 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pharmaceutical Database - Live Dashboard</title>
+    <title>Shaigan BD Portal - Ultimate Dashboard</title>
     <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --primary-blue: #1976d2;
+            --accent-green: #43a047;
+            --text-main: #e3f2fd;
+            --text-dim: #b0bec5;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(180deg, #0a1929 0%, #1a2332 100%);
             background-attachment: fixed;
             min-height: 100vh;
             padding: 20px;
-            color: #e3f2fd;
+            color: var(--text-main);
+            overflow-x: hidden;
         }
 
-        .container { max-width: 1800px; margin: 0 auto; }
+        .container { max-width: 1600px; margin: 0 auto; }
 
-        /* Header */
-        .header { text-align: center; margin-bottom: 30px; animation: fadeInDown 0.6s ease; }
+        /* Header Section */
+        .header { text-align: center; margin-bottom: 30px; animation: fadeInDown 0.8s ease; }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .header h1 { color: #ffffff; font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin-bottom: 10px; }
-        .feature-badge { background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.85em; font-weight: 700; margin: 5px; display: inline-block; }
-
-        /* Glass Card & Search */
-        .glass-card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 25px; margin-bottom: 25px; }
-        .search-container { position: relative; }
-        .search-input { width: 100%; padding: 16px; border-radius: 12px; background: white; color: #0a1929; border: none; font-size: 1.1em; }
         
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: rgba(25, 118, 210, 0.15); border: 2px solid rgba(100, 181, 246, 0.3); border-radius: 14px; padding: 18px; text-align: center; }
-        .stat-number { font-size: 2.2em; font-weight: 700; color: #ffffff; }
-        .stat-label { font-size: 0.8em; color: #b0bec5; text-transform: uppercase; }
+        .header h1 { font-size: 2.8em; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
+        .header-icon { display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        
+        .feature-badge { background: linear-gradient(135deg, var(--accent-green), #66bb6a); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.85em; font-weight: 700; margin: 5px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        /* Results Grid */
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
-        .product-card { background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(100, 181, 246, 0.2); border-radius: 14px; padding: 20px; transition: 0.3s; }
-        .product-card:hover { transform: translateY(-5px); border-color: #64b5f6; }
-        .card-header { border-bottom: 2px solid rgba(100, 181, 246, 0.3); padding-bottom: 12px; margin-bottom: 15px; }
-        .product-name { font-size: 1.2em; font-weight: 700; color: #ffffff; }
-        .info-label { font-size: 0.7em; color: #90caf9; text-transform: uppercase; margin-top: 10px; font-weight: bold; }
-        .info-value { font-size: 0.95em; line-height: 1.4; margin-bottom: 10px; }
+        /* Search & Filter Section */
+        .glass-card { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
 
-        /* Buttons */
-        .research-links { display: flex; gap: 10px; margin-top: 15px; }
-        .btn { flex: 1; padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 600; cursor: pointer; border: none; font-size: 0.9em; }
+        .search-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-container { flex: 2; position: relative; min-width: 300px; }
+        .search-input { width: 100%; padding: 16px 20px; border-radius: 12px; border: none; font-size: 1.1em; background: rgba(255,255,255,0.95); color: #0a1929; outline: none; transition: 0.3s; }
+        .search-input:focus { box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.3); }
+
+        .filter-group { flex: 1; min-width: 200px; }
+        .filter-select { 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 12px; 
+            border: none; 
+            background: rgba(255,255,255,0.1); 
+            color: white; 
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+        }
+        .filter-select option { background: #1a2332; color: white; }
+
+        /* Stats Dashboard */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: rgba(25, 118, 210, 0.1); border: 1px solid rgba(100, 181, 246, 0.2); border-radius: 16px; padding: 20px; text-align: center; transition: 0.3s; }
+        .stat-card:hover { background: rgba(25, 118, 210, 0.2); transform: translateY(-3px); }
+        .stat-number { font-size: 2.4em; font-weight: 800; color: #fff; display: block; }
+        .stat-label { font-size: 0.75em; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        /* Product Grid */
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 25px; }
+        .product-card { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 18px; 
+            padding: 24px; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-card:hover { transform: translateY(-8px); border-color: var(--primary-blue); background: rgba(255, 255, 255, 0.09); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        
+        .card-header { margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; }
+        .product-name { font-size: 1.3em; font-weight: 700; color: #fff; margin-bottom: 5px; }
+        
+        .info-label { font-size: 0.65em; color: #90caf9; text-transform: uppercase; margin-top: 12px; font-weight: 800; letter-spacing: 0.5px; }
+        .info-value { font-size: 0.95em; line-height: 1.5; margin-bottom: 4px; color: var(--text-main); }
+        .highlight-value { color: #ffca28; font-weight: 700; font-size: 1.1em; }
+
+        .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .card-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7em; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.1); }
+
+        /* UI Elements */
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none; font-size: 0.9em; }
         .btn-google { background: #4285f4; color: white; }
-        .btn-edit { background: #1976d2; color: white; }
-        .load-more-btn { background: #1976d2; color: white; padding: 15px 40px; border-radius: 30px; border: none; cursor: pointer; display: block; margin: 20px auto; }
+        .btn-edit { background: var(--primary-blue); color: white; }
+        .btn:hover { opacity: 0.9; transform: scale(1.02); }
 
-        /* Edit Modal */
-        .edit-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
-        .edit-modal.show { display: flex; }
-        .edit-modal-content { background: #1e3a5f; padding: 30px; border-radius: 16px; width: 90%; max-width: 600px; color: white; }
-        .edit-form-group { margin-bottom: 15px; }
-        .edit-form-group label { display: block; margin-bottom: 5px; color: #90caf9; }
-        .edit-form-group input, textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #42a5f5; background: #0a1929; color: white; }
-        .save-btn { width: 100%; padding: 15px; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        /* Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: #1e3a5f; padding: 40px; border-radius: 24px; width: 95%; max-width: 650px; border: 1px solid var(--glass-border); box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .form-row { margin-bottom: 20px; }
+        .form-row label { display: block; margin-bottom: 8px; color: #90caf9; font-weight: 700; font-size: 0.8em; text-transform: uppercase; }
+        .form-row input, textarea { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: #0a1929; color: white; font-size: 1em; }
+        .save-btn { width: 100%; padding: 18px; background: var(--accent-green); color: white; border: none; border-radius: 12px; font-size: 1.1em; font-weight: 800; cursor: pointer; margin-top: 10px; }
+
+        .loading-spinner { text-align: center; padding: 60px; font-size: 1.2em; color: var(--text-dim); }
         
-        .loading { text-align: center; padding: 50px; font-size: 1.5em; }
+        @media (max-width: 768px) {
+            .results-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.8em; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>🧬 Business Development Portal - Shaigan Pharma</h1>
-        <p>Live Dashboard - Connected to Testing Sheet for BD</p>
+        <h1><span class="header-icon">🧬</span> Shaigan Pharma BD Portal</h1>
+        <p>Developed by AGM Business Development | Live Cloud Sync Active</p>
         <div class="feature-badges">
-            <span class="feature-badge">LIVE SYNC</span>
-            <span class="feature-badge">RECORDS: <span id="syncCount">...</span></span>
+            <span class="feature-badge">⚡ Real-time Updates</span>
+            <span class="feature-badge">📂 Total SKU: <span id="syncTotal">...</span></span>
+            <span class="feature-badge">🔍 Advanced Filtering</span>
         </div>
     </div>
 
     <div class="glass-card">
-        <div class="search-container">
-            <input type="text" class="search-input" id="searchInput" placeholder="Search by Product Name, Composition, or Indication...">
+        <div class="search-row">
+            <div class="search-container">
+                <input type="text" id="mainSearch" class="search-input" placeholder="Search product name, composition, or brand...">
+            </div>
+            <div class="filter-group">
+                <select id="filterForm" class="filter-select">
+                    <option value="">All Dosage Forms</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="filterStatus" class="filter-select">
+                    <option value="">All Statuses</option>
+                </select>
+            </div>
         </div>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-number" id="statTotal">0</div>
-            <div class="stat-label">Total Products</div>
+            <span class="stat-number" id="countTotal">0</span>
+            <span class="stat-label">Database Records</span>
         </div>
         <div class="stat-card">
-            <div class="stat-number" id="statFiltered">0</div>
-            <div class="stat-label">Matching</div>
+            <span class="stat-number" id="countFiltered" style="color: #42a5f5;">0</span>
+            <span class="stat-label">Matches Found</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" id="countValue" style="color: #ffca28;">0</span>
+            <span class="stat-label">MAT Displayed</span>
         </div>
     </div>
 
-    <div id="resultsGrid" class="results-grid">
-        <div class="loading">Initializing Database...</div>
+    <div id="productGrid" class="results-grid">
+        <div class="loading-spinner">📡 Establishing connection to Shaigan Database...</div>
     </div>
 
-    <button id="loadMoreBtn" class="load-more-btn" style="display:none;" onclick="loadMore()">Load More Records</button>
+    <button id="loadMore" class="btn btn-edit" style="display:none; margin: 30px auto; width: 250px; border-radius: 50px; background: var(--glass-bg);">Load More Products</button>
 </div>
 
-<div class="edit-modal" id="editModal">
-    <div class="edit-modal-content">
-        <h2>Update Product Info</h2>
-        <p id="editMsg" style="color: #4caf50; margin-bottom: 10px;"></p>
-        <div class="edit-form-group">
-            <label>Product Name (ID)</label>
-            <input type="text" id="editName" readonly style="opacity: 0.6;">
+<div id="updateModal" class="modal">
+    <div class="modal-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="color: #fff;">Modify Product Record</h2>
+            <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:2em; cursor:pointer;">&times;</button>
         </div>
-        <div class="edit-form-group">
-            <label>Composition</label>
-            <input type="text" id="editComp">
+        <p id="modalFeedback" style="text-align:center; color: #43a047; font-weight: 700;"></p>
+        
+        <div class="form-row">
+            <label>Product Identity (Read Only)</label>
+            <input type="text" id="mName" readonly style="background: rgba(0,0,0,0.3); color: #888;">
         </div>
-        <div class="edit-form-group">
-            <label>MAT Value</label>
-            <input type="text" id="editMAT">
+        <div class="form-row">
+            <label>Current Composition</label>
+            <input type="text" id="mComp">
         </div>
-        <div class="edit-form-group">
-            <label>Indication</label>
-            <textarea id="editInd" rows="3"></textarea>
+        <div class="form-row">
+            <label>MAT Value (PKR)</label>
+            <input type="text" id="mMAT">
         </div>
-        <button class="save-btn" onclick="saveData()">🚀 Sync to Google Sheet</button>
-        <button class="btn" style="background:none; color:white; margin-top:10px; width:100%;" onclick="closeModal()">Cancel</button>
+        <div class="form-row">
+            <label>Clinical Indication</label>
+            <textarea id="mInd" rows="3"></textarea>
+        </div>
+        
+        <button class="save-btn" onclick="submitData()">Update Google Sheet Now</button>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm2u27sZNPQqyS5CV_-T3vYHrm0mC2du22Zk68sKKtozp-FLFFzXZKBItDxrPzwZdYiQ/exec";
-    let db = [];
-    let filtered = [];
-    let limit = 20;
+    // Replace this with your Google Script Web App URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbwm2u27sZNPQqyS5CV_-T3vYHrm0mC2du22Zk68sKKtozp-FLFFzXZKBItDxrPzwZdYiQ/exec";
+                        
+    let dbRaw = [];
+    let dbFiltered = [];
+    let itemsVisible = 16;
 
-    // 1. Fetch Data from Sheet
-    async function loadData() {
+    // 1. DATA INITIALIZATION
+    async function init() {
         try {
-            const response = await fetch(SCRIPT_URL);
-            db = await response.json();
-            filtered = [...db];
-            updateUI();
-        } catch (e) {
-            document.getElementById('resultsGrid').innerHTML = "Error connecting to Sheet. Check Web App permissions.";
+            const response = await fetch(API_URL);
+            dbRaw = await response.json();
+            dbFiltered = [...dbRaw];
+            
+            populateFilters();
+            render();
+        } catch (err) {
+            document.getElementById('productGrid').innerHTML = `<div class="loading-spinner" style="color:red;">❌ Sync Failed: ${err.message}</div>`;
         }
     }
 
-    // 2. Render Cards
-    function updateUI() {
-        const grid = document.getElementById('resultsGrid');
-        const show = filtered.slice(0, limit);
+    // 2. DYNAMIC DROPDOWN LOGIC
+    function populateFilters() {
+        const forms = [...new Set(dbRaw.map(x => x.DosageForm).filter(Boolean))].sort();
+        const stats = [...new Set(dbRaw.map(x => x.SpecialNote || x.RegistrationStatus).filter(Boolean))].sort();
         
-        document.getElementById('statTotal').innerText = db.length;
-        document.getElementById('statFiltered').innerText = filtered.length;
-        document.getElementById('syncCount').innerText = db.length;
+        const formSelect = document.getElementById('filterForm');
+        const statSelect = document.getElementById('filterStatus');
+        
+        forms.forEach(f => formSelect.innerHTML += `<option value="${f}">${f}</option>`);
+        stats.forEach(s => statSelect.innerHTML += `<option value="${s}">${s}</option>`);
+    }
 
-        if (show.length === 0) {
-            grid.innerHTML = "<div class='loading'>No records found.</div>";
+    // 3. RENDER ENGINE
+    function render() {
+        const grid = document.getElementById('productGrid');
+        const list = dbFiltered.slice(0, itemsVisible);
+        
+        // Update Stats
+        document.getElementById('countTotal').innerText = dbRaw.length;
+        document.getElementById('countFiltered').innerText = dbFiltered.length;
+        document.getElementById('syncTotal').innerText = dbRaw.length;
+        
+        if(list.length === 0) {
+            grid.innerHTML = '<div class="loading-spinner">No matching products found. Try a different search term.</div>';
             return;
         }
 
-        grid.innerHTML = show.map(item => `
+        grid.innerHTML = list.map(p => `
             <div class="product-card">
-                <div class="card-header">
-                    <div class="product-name">${item.ProductName}</div>
-                    <div style="font-size: 0.8em; color: #b0bec5;">Code: ${item.ProductCode || 'N/A'}</div>
+                <div>
+                    <div class="card-header">
+                        <div class="product-name">${p.ProductName}</div>
+                        <div style="font-size: 0.7em; color: var(--text-dim);">SKU: ${p.ProductCode || 'GEN-ID'}</div>
+                    </div>
+                    
+                    <div class="info-label">🧬 Active Composition</div>
+                    <div class="info-value">${p.Composition || 'Proprietary Blend'}</div>
+                    
+                    <div class="info-label">📊 Market Value (MAT)</div>
+                    <div class="info-value highlight-value">${p.MATValue || 'PKR 0.00M'}</div>
+
+                    <div class="info-label">🩺 Therapeutic Indication</div>
+                    <div class="info-value" style="font-style: italic;">${p.Indication || 'General therapeutic use'}</div>
+                    
+                    <div class="badge-row">
+                        <span class="card-badge" style="border-left: 3px solid #1976d2;">${p.DosageForm || 'Form'}</span>
+                        <span class="card-badge" style="border-left: 3px solid #43a047;">${p.SpecialNote || 'Active'}</span>
+                    </div>
                 </div>
-                <div class="info-label">🧬 Composition</div>
-                <div class="info-value">${item.Composition}</div>
-                <div class="info-label">📊 MAT Value</div>
-                <div class="info-value" style="color: #ffc107; font-weight: bold;">${item.MATValue || 'N/A'}</div>
-                <div class="info-label">🩺 Indication</div>
-                <div class="info-value">${item.Indication || 'No data'}</div>
-                
-                <div class="research-links">
-                    <a href="https://www.google.com/search?q=${item.ProductName}+pharmaceuticals" target="_blank" class="btn btn-google">Google</a>
-                    <button class="btn btn-edit" onclick="openModal('${item.ProductName.replace(/'/g, "\\'")}')">Edit</button>
+
+                <div class="btn-group">
+                    <a href="https://www.google.com/search?q=${p.ProductName}+pharma+pakistan" target="_blank" class="btn btn-google">Google Info</a>
+                    <button onclick="openModal('${p.ProductName.replace(/'/g, "\\'")}')" class="btn btn-edit">Modify Record</button>
                 </div>
             </div>
         `).join('');
 
-        document.getElementById('loadMoreBtn').style.display = filtered.length > limit ? 'block' : 'none';
+        document.getElementById('loadMore').style.display = dbFiltered.length > itemsVisible ? 'block' : 'none';
     }
 
-    // 3. Search Logic
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        filtered = db.filter(i => 
-            i.ProductName.toLowerCase().includes(term) || 
-            i.Composition.toLowerCase().includes(term) ||
-            (i.Indication && i.Indication.toLowerCase().includes(term))
-        );
-        limit = 20;
-        updateUI();
-    });
+    // 4. MULTI-FILTER LOGIC
+    function applyFilters() {
+        const search = document.getElementById('mainSearch').value.toLowerCase();
+        const formF = document.getElementById('filterForm').value;
+        const statF = document.getElementById('filterStatus').value;
 
-    // 4. Modal Logic
-    function openModal(name) {
-        const item = db.find(p => p.ProductName === name);
-        document.getElementById('editName').value = item.ProductName;
-        document.getElementById('editComp').value = item.Composition;
-        document.getElementById('editMAT').value = item.MATValue || '';
-        document.getElementById('editInd').value = item.Indication || '';
-        document.getElementById('editModal').classList.add('show');
-    }
-
-    function closeModal() { document.getElementById('editModal').classList.remove('show'); }
-
-    async function saveData() {
-        const btn = document.querySelector('.save-btn');
-        btn.innerText = "⏳ Syncing...";
-        btn.disabled = true;
-
-        const data = {
-            ProductName: document.getElementById('editName').value,
-            Composition: document.getElementById('editComp').value,
-            MATValue: document.getElementById('editMAT').value,
-            Indication: document.getElementById('editInd').value
-        };
-
-        await fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(data)
+        dbFiltered = dbRaw.filter(p => {
+            const matchesSearch = p.ProductName.toLowerCase().includes(search) || 
+                                 p.Composition.toLowerCase().includes(search);
+            const matchesForm = !formF || p.DosageForm === formF;
+            const matchesStat = !statF || (p.SpecialNote === statF || p.RegistrationStatus === statF);
+            
+            return matchesSearch && matchesForm && matchesStat;
         });
 
-        document.getElementById('editMsg').innerText = "Update sent to Sheet! Reloading...";
-        setTimeout(() => {
-            location.reload();
-        }, 1500);
+        itemsVisible = 16;
+        render();
     }
 
-    function loadMore() { limit += 20; updateUI(); }
+    // Event Listeners for filters
+    document.getElementById('mainSearch').addEventListener('input', applyFilters);
+    document.getElementById('filterForm').addEventListener('change', applyFilters);
+    document.getElementById('filterStatus').addEventListener('change', applyFilters);
+    document.getElementById('loadMore').addEventListener('click', () => { itemsVisible += 16; render(); });
 
-    window.onload = loadData;
+    // 5. MODAL OPERATIONS
+    function openModal(name) {
+        const item = dbRaw.find(x => x.ProductName === name);
+        document.getElementById('mName').value = item.ProductName;
+        document.getElementById('mComp').value = item.Composition;
+        document.getElementById('mMAT').value = item.MATValue;
+        document.getElementById('mInd').value = item.Indication;
+        document.getElementById('updateModal').classList.add('show');
+    }
+
+    function closeModal() { document.getElementById('updateModal').classList.remove('show'); document.getElementById('modalFeedback').innerText = ""; }
+
+    async function submitData() {
+        const saveBtn = document.querySelector('.save-btn');
+        const feedback = document.getElementById('modalFeedback');
+        
+        saveBtn.innerText = "⏳ Synchronizing with Cloud...";
+        saveBtn.disabled = true;
+
+        const payload = {
+            ProductName: document.getElementById('mName').value,
+            Composition: document.getElementById('mComp').value,
+            MATValue: document.getElementById('mMAT').value,
+            Indication: document.getElementById('mInd').value
+        };
+
+        try {
+            // Using POST with no-cors as Google Apps Script triggers can be picky
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                body: JSON.stringify(payload)
+            });
+
+            feedback.innerText = "✅ Successfully updated in Google Sheets!";
+            setTimeout(() => { location.reload(); }, 1500);
+        } catch (e) {
+            feedback.innerText = "❌ Error: Could not sync.";
+            saveBtn.disabled = false;
+            saveBtn.innerText = "Retry Update";
+        }
+    }
+
+    // Bootstrap
+    window.onload = init;
 </script>
+
 </body>
 </html>
