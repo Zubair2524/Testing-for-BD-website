@@ -221,14 +221,14 @@
                 <div class="matrix">
                     <div class="m-item"><span class="m-lab">Molecule Market Value</span><span class="m-val" style="color:var(--gold)">${p.MATValue || '0'}</span></div>
                     <div class="m-item"><span class="m-lab">Value Growth</span><span class="m-val">${fmtG(p.ValueGrowth)}</span></div>
-                    <div class="m-item"><span class="m-lab">Unit Sales</span><span class="m-val">${p.UnitSales || '0'}</span></div>
+                    <div class="m-item"><span class="m-lab">Unit Sale</span><span class="m-val">${p.UnitSale || '0'}</span></div>
                     <div class="m-item"><span class="m-lab">Unit Growth</span><span class="m-val">${fmtG(p.UnitGrowth)}</span></div>
                 </div>
 
                 ${isExp ? `
                 <div class="extra-details">
                     ${Object.entries(p).map(([k,v]) => {
-                        if(['ProductName','Composition','Indication','MATValue','ValueGrowth','UnitSales','UnitGrowth'].includes(k)) return '';
+                        if(['ProductName','Composition','Indication','MATValue','ValueGrowth','UnitSale','UnitGrowth'].includes(k)) return '';
                         return `<div class="m-item"><span class="m-lab">${k}</span><span class="m-val">${v || '---'}</span></div>`;
                     }).join('')}
                 </div>
