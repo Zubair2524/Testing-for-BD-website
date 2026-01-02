@@ -12,6 +12,7 @@
             --cream: #fdf5e6;
             --bg-dark: #050a14;
             --card-bg: rgba(16, 33, 65, 0.95);
+            --danger: #e74c3c;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -24,25 +25,32 @@
         }
 
         /* Header & Logo */
-        .portal-header { text-align: center; padding: 30px 10px; }
+        .portal-header { text-align: center; padding: 30px 10px; position: relative; }
         .logo-box img { 
             height: 110px; margin-bottom: 15px; 
             filter: drop-shadow(0 0 10px var(--gold));
             animation: float 4s ease-in-out infinite;
         }
         h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 2.2rem; }
-        .sub-heading { color: var(--turquoise); letter-spacing: 4px; font-weight: 700; font-size: 0.9rem; margin-top: 5px; }
+        .sub-heading { color: var(--turquoise); letter-spacing: 4px; font-weight: 700; font-size: 0.9rem; margin-top: 5px; text-transform: uppercase; }
+        .agm-line { font-size: 0.65rem; color: var(--gold); opacity: 0.8; letter-spacing: 2px; margin-top: 2px; font-weight: 400; }
 
-        /* KPI Dashboard */
+        /* KPI Dashboard & Live Sync */
         .kpi-row {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px; max-width: 1200px; margin: 20px auto;
         }
         .kpi-card {
             background: var(--card-bg); border: 1px solid var(--gold);
             border-radius: 15px; padding: 20px; text-align: center;
-            transition: 0.3s;
+            transition: 0.3s; position: relative;
         }
+        .live-indicator {
+            position: absolute; top: 15px; right: 20px;
+            display: flex; align-items: center; gap: 8px; font-size: 0.7rem; font-weight: bold; color: #2ecc71;
+        }
+        .dot { height: 8px; width: 8px; background-color: #2ecc71; border-radius: 50%; display: inline-block; animation: blink 2s infinite; }
+
         .kpi-card i { font-size: 2rem; color: var(--gold); margin-bottom: 10px; animation: pulse 2s infinite; }
         .kpi-val { display: block; font-size: 2rem; font-weight: 800; color: #fff; }
         .kpi-lab { font-size: 0.7rem; opacity: 0.8; text-transform: uppercase; }
@@ -57,7 +65,7 @@
         .search-wrap { flex: 2; min-width: 280px; position: relative; }
         .search-wrap input { 
             width: 100%; padding: 12px 15px 12px 40px; border-radius: 10px; 
-            border: 2px solid var(--gold); background: #fff; color: #333;
+            border: 2px solid var(--gold); background: #fff; color: #333; font-weight: 600;
         }
         .search-wrap i { position: absolute; left: 15px; top: 14px; color: var(--turquoise); }
         .drop-filter { 
@@ -67,43 +75,44 @@
         .btn-clear { background: #c0392b; color: white; border: none; padding: 0 20px; border-radius: 10px; cursor: pointer; font-weight: 700; }
 
         /* Product Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; max-width: 1300px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; max-width: 1300px; margin: auto; }
         .p-card {
-            background: var(--card-bg); border-radius: 15px; border-left: 5px solid var(--gold);
+            background: var(--card-bg); border-radius: 15px; border-top: 4px solid var(--gold);
             padding: 20px; transition: 0.4s; position: relative; overflow: hidden;
         }
-        .p-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .p-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         
         .card-title { 
             font-size: 1.3rem; font-weight: 700; color: var(--gold); 
-            display: flex; align-items: center; gap: 12px; margin-bottom: 15px; 
+            display: flex; align-items: center; gap: 12px; margin-bottom: 5px; 
         }
-        .card-title i { animation: bounce 3s infinite; }
+        .comp-line { font-size: 0.85rem; color: #ccc; font-style: italic; display: block; margin-bottom: 10px; }
+        .ind-pill { font-size: 0.7rem; background: var(--turquoise); color: white; padding: 3px 10px; border-radius: 50px; font-weight: 700; display: inline-block; margin-bottom: 15px; }
 
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
-        .label { color: var(--turquoise); font-weight: 700; text-transform: uppercase; }
-        
-        .detail-pane { display: none; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; animation: slideIn 0.3s ease; }
-        
+        /* Data Matrix */
+        .matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; }
+        .m-item { display: flex; flex-direction: column; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+        .m-lab { font-size: 0.6rem; color: var(--gold); text-transform: uppercase; font-weight: 800; }
+        .m-val { font-size: 0.9rem; font-weight: 700; color: #fff; }
+
         .btn-row { display: flex; gap: 10px; margin-top: 15px; }
         .btn-tool { 
             flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer;
-            font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s;
+            font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; font-size: 0.8rem;
         }
-        .btn-info { background: var(--turquoise); color: white; }
-        .btn-edit { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
-        .btn-edit:hover { background: var(--gold); color: black; }
+        .btn-edit { background: var(--gold); color: black; }
+        .btn-del { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+        .btn-del:hover { background: var(--danger); color: white; }
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; padding: 20px; overflow-y: auto; }
-        .modal-content { background: #16213e; max-width: 750px; margin: auto; border-radius: 20px; padding: 30px; border: 2px solid var(--gold); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; padding: 20px; overflow-y: auto; align-items: center; justify-content: center; }
+        .modal-content { background: #16213e; width: 100%; max-width: 750px; border-radius: 20px; padding: 30px; border: 2px solid var(--gold); }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
         /* Animations */
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-5px);} 60% {transform: translateY(-3px);} }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -114,40 +123,45 @@
         </div>
         <h1>Business Development Portal</h1>
         <div class="sub-heading">R&D | REGULATORY | BUSINESS DEVELOPMENT</div>
+        <div class="agm-line">AGM BD</div>
     </header>
 
     <div class="kpi-row">
-        <div class="kpi-card"><i class="fas fa-microscope"></i><span class="kpi-val" id="countTotal">0</span><span class="kpi-lab">Database Records</span></div>
-        <div class="kpi-card"><i class="fas fa-filter"></i><span class="kpi-val" id="countFiltered">0</span><span class="kpi-lab">Matches Found</span></div>
-        <div class="kpi-card" onclick="location.reload()" style="cursor:pointer; border-color:var(--turquoise)"><i class="fas fa-sync-alt" style="color:var(--turquoise)"></i><span class="kpi-lab">Sync Status</span><span class="kpi-val" style="font-size:1rem">ACTIVE</span></div>
+        <div class="kpi-card">
+            <div class="live-indicator"><span class="dot"></span> LIVE UPDATES</div>
+            <i class="fas fa-database"></i><span class="kpi-val" id="countTotal">0</span><span class="kpi-lab">Total Portfolio Records</span>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-search-plus"></i><span class="kpi-val" id="countFiltered">0</span><span class="kpi-lab">Active Search Matches</span>
+        </div>
     </div>
 
     <div class="filter-glass">
-        <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="mainSearch" placeholder="Search product or composition..."></div>
+        <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="mainSearch" placeholder="Search product, composition or indication..."></div>
         <select id="filterTeam" class="drop-filter"><option value="">All Teams</option></select>
-        <select id="filterNote" class="drop-filter"><option value="">Special Note</option></select>
-        <button class="btn-clear" onclick="clearFilters()">Clear All</button>
+        <button class="btn-clear" onclick="clearFilters()">Reset Portal</button>
     </div>
 
     <div id="productGrid" class="grid">
         <div style="grid-column: 1/-1; text-align: center; padding: 100px;">
-            <i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--gold)"></i><br><br>Establishing Secure Link...
+            <i class="fas fa-atom fa-spin fa-3x" style="color:var(--gold)"></i><br><br>Accessing Cloud Database...
         </div>
     </div>
 
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <h2 style="color:var(--gold); margin-bottom:20px; border-bottom: 1px solid var(--gold); padding-bottom: 10px;"><i class="fas fa-database"></i> Record Update Manager</h2>
+            <h2 style="color:var(--gold); margin-bottom:20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fas fa-edit"></i> Product Master Update</h2>
             <div class="form-grid" id="formContainer"></div>
             <div style="margin-top:25px; display:flex; gap:10px;">
-                <button id="btnSave" class="btn-tool btn-info" onclick="saveRecord()" style="background:#27ae60">Save to Cloud</button>
-                <button class="btn-tool btn-edit" onclick="closeModal()">Cancel</button>
+                <button id="btnSave" class="btn-tool" onclick="saveRecord()" style="background:#27ae60; color:white">Update Record</button>
+                <button class="btn-tool" onclick="closeModal()" style="background:#555; color:white">Cancel</button>
             </div>
         </div>
     </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbytDYG9VFIY7TkOTMVMj5ZTdTZ_v6q84L8cDMAyfzImQRBHmieXDWG_R6maAzKFTTme2Q/exec"; // PASTE NEW URL HERE
+    const API_URL = "https://script.google.com/macros/s/AKfycbytDYG9VFIY7TkOTMVMj5ZTdTZ_v6q84L8cDMAyfzImQRBHmieXDWG_R6maAzKFTTme2Q/exec"; 
+    const ADMIN_PASS = "Abc123@";
     let dbRaw = [];
     let dbFiltered = [];
 
@@ -158,22 +172,18 @@
             dbFiltered = [...dbRaw];
             
             const teams = [...new Set(dbRaw.map(x => x.TeamName).filter(Boolean))].sort();
-            const notes = [...new Set(dbRaw.map(x => x.SpecialNote).filter(Boolean))].sort();
-            
             const tSel = document.getElementById('filterTeam');
-            const nSel = document.getElementById('filterNote');
             teams.forEach(t => tSel.innerHTML += `<option value="${t}">${t}</option>`);
-            notes.forEach(n => nSel.innerHTML += `<option value="${n}">${n}</option>`);
             
             render();
-        } catch (e) { document.getElementById('productGrid').innerHTML = "<h3 style='color:red; text-align:center;'>Sync Failed: Failed to fetch</h3>"; }
+        } catch (e) { document.getElementById('productGrid').innerHTML = "<h3 style='color:red; text-align:center;'>Database Offline</h3>"; }
     }
 
     function getFormIcon(form) {
         const f = (form || "").toLowerCase();
         if(f.includes("tab")) return "fa-tablets";
         if(f.includes("cap")) return "fa-capsules";
-        if(f.includes("inj") || f.includes("vial") || f.includes("amp")) return "fa-syringe";
+        if(f.includes("inj") || f.includes("vial")) return "fa-syringe";
         return "fa-pills";
     }
 
@@ -185,78 +195,76 @@
         grid.innerHTML = dbFiltered.map((p, i) => `
             <div class="p-card">
                 <div class="card-title"><i class="fas ${getFormIcon(p.DosageForm)}"></i> ${p.ProductName}</div>
-                <div class="info-row"><span class="label">Composition</span><span class="value">${p.Composition || '-'}</span></div>
-                <div class="info-row"><span class="label">MAT Value</span><span class="value" style="color:var(--gold); font-weight:bold;">${p.MATValue || '-'}</span></div>
+                <span class="comp-line">${p.Composition || 'Composition Pending'}</span>
+                <div class="ind-pill">${p.Indication || 'Therapeutic Area'}</div>
                 
-                <div class="detail-pane" id="detail-${i}">
-                    ${Object.entries(p).map(([k,v]) => `<div class="info-row"><span class="label" style="font-size:10px">${k}</span><span class="value">${v || '-'}</span></div>`).join('')}
+                <div class="matrix">
+                    <div class="m-item"><span class="m-lab">Molecule Market Value</span><span class="m-val" style="color:var(--gold)">${p.MATValue || '0'}</span></div>
+                    <div class="m-item"><span class="m-lab">Value Growth</span><span class="m-val">${p.ValueGrowth || '0'}%</span></div>
+                    <div class="m-item"><span class="m-lab">Unit Sales</span><span class="m-val">${p.UnitSales || '0'}</span></div>
+                    <div class="m-item"><span class="m-lab">Unit Growth</span><span class="m-val">${p.UnitGrowth || '0'}%</span></div>
                 </div>
 
                 <div class="btn-row">
-                    <button class="btn-tool btn-info" id="btn-t-${i}" onclick="toggle(${i})"><i class="fas fa-info-circle"></i> Details</button>
-                    <button class="btn-tool btn-edit" onclick="authEdit('${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-lock"></i> Edit</button>
+                    <button class="btn-tool btn-edit" onclick="handleAuth('EDIT', '${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="btn-tool btn-del" onclick="handleAuth('DELETE', '${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Delete</button>
                 </div>
             </div>
         `).join('');
     }
 
-    function toggle(idx) {
-        const d = document.getElementById(`detail-${idx}`);
-        const b = document.getElementById(`btn-t-${idx}`);
-        const open = d.style.display === "block";
-        d.style.display = open ? "none" : "block";
-        b.innerHTML = open ? '<i class="fas fa-info-circle"></i> Details' : '<i class="fas fa-minus-circle"></i> Hide';
-    }
-
-    function authEdit(name) {
-        if(prompt("Enter Admin Password:") === "Abc123@") {
+    function handleAuth(action, name) {
+        if(prompt("Administrator Password Required:") !== ADMIN_PASS) return alert("Unauthorized Access.");
+        
+        if(action === 'EDIT') {
             const p = dbRaw.find(x => x.ProductName === name);
             const container = document.getElementById('formContainer');
             container.innerHTML = Object.entries(p).map(([k,v]) => `
                 <div>
-                    <label style="font-size:11px; color:var(--gold); font-weight:700;">${k}</label>
-                    <input type="text" id="inp_${k}" value="${v || ''}" 
-                    style="width:100%; padding:10px; background:#000; color:white; border:1px solid #444; border-radius:5px;"
-                    ${k === 'ProductName' ? 'readonly' : ''}>
+                    <label style="font-size:10px; color:var(--gold); font-weight:700; text-transform:uppercase;">${k}</label>
+                    <input type="text" id="inp_${k}" value="${v || ''}" ${k === 'ProductName' ? 'readonly' : ''} 
+                    style="width:100%; padding:10px; background:#000; color:white; border:1px solid #444; border-radius:5px;">
                 </div>
             `).join('');
             document.getElementById('editModal').style.display = 'flex';
-        } else { alert("Access Denied."); }
+        } else if(action === 'DELETE') {
+            if(confirm(`Are you sure you want to PERMANENTLY delete "${name}"?`)) {
+                syncToCloud({ ProductName: name, action: "DELETE" });
+            }
+        }
+    }
+
+    async function syncToCloud(payload) {
+        try {
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            alert("Database Updated Successfully.");
+            location.reload();
+        } catch (e) { alert("Sync Failed."); }
     }
 
     async function saveRecord() {
         const btn = document.getElementById('btnSave');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
-        btn.disabled = true;
-
         const payload = {};
         document.querySelectorAll('[id^="inp_"]').forEach(el => {
             payload[el.id.replace('inp_', '')] = el.value;
         });
-
-        try {
-            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            alert("Cloud Update Successful! Same record updated.");
-            location.reload();
-        } catch (e) {
-            alert("Sync Error. Please try again.");
-            btn.innerHTML = 'Save to Cloud';
-            btn.disabled = false;
-        }
+        await syncToCloud(payload);
     }
 
     function applyFilters() {
         const s = document.getElementById('mainSearch').value.toLowerCase();
         const t = document.getElementById('filterTeam').value;
-        const n = document.getElementById('filterNote').value;
-        dbFiltered = dbRaw.filter(p => (p.ProductName.toLowerCase().includes(s) || p.Composition.toLowerCase().includes(s)) && (!t || p.TeamName === t) && (!n || p.SpecialNote === n));
+        dbFiltered = dbRaw.filter(p => 
+            (p.ProductName.toLowerCase().includes(s) || (p.Composition || "").toLowerCase().includes(s) || (p.Indication || "").toLowerCase().includes(s)) && 
+            (!t || p.TeamName === t)
+        );
         render();
     }
 
     function clearFilters() {
         document.getElementById('mainSearch').value = "";
         document.getElementById('filterTeam').value = "";
-        document.getElementById('filterNote').value = "";
         dbFiltered = [...dbRaw];
         render();
     }
@@ -264,7 +272,6 @@
     function closeModal() { document.getElementById('editModal').style.display = 'none'; }
     document.getElementById('mainSearch').addEventListener('input', applyFilters);
     document.getElementById('filterTeam').addEventListener('change', applyFilters);
-    document.getElementById('filterNote').addEventListener('change', applyFilters);
     window.onload = init;
 </script>
 </body>
