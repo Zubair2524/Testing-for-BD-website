@@ -103,6 +103,7 @@
             font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; font-size: 0.8rem;
         }
         .btn-edit { background: var(--gold); color: black; }
+        .btn-info { background: #34495e; color: white; }
         .btn-del { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
         .btn-del:hover { background: var(--danger); color: white; }
 
@@ -175,7 +176,6 @@
             dbRaw = await res.json();
             dbFiltered = [...dbRaw];
             
-            // Populate Dropdowns
             const teams = [...new Set(dbRaw.map(x => x.TeamName).filter(Boolean))].sort();
             const notes = [...new Set(dbRaw.map(x => x.SpecialNote).filter(Boolean))].sort();
             
@@ -197,6 +197,9 @@
         return "fa-pills";
     }
 
+    // Helper to clean growth display
+    const fmtG = (v) => (!v || isNaN(v)) ? (v || '0') : `${v}%`;
+
     function render() {
         const grid = document.getElementById('productGrid');
         document.getElementById('countTotal').innerText = dbRaw.length;
@@ -210,17 +213,26 @@
                 
                 <div class="matrix">
                     <div class="m-item"><span class="m-lab">Molecule Market Value</span><span class="m-val" style="color:var(--gold)">${p.MATValue || '0'}</span></div>
-                    <div class="m-item"><span class="m-lab">Value Growth</span><span class="m-val">${p.ValueGrowth || '0'}%</span></div>
+                    <div class="m-item"><span class="m-lab">Value Growth</span><span class="m-val">${fmtG(p.ValueGrowth)}</span></div>
                     <div class="m-item"><span class="m-lab">Unit Sales</span><span class="m-val">${p.UnitSales || '0'}</span></div>
-                    <div class="m-item"><span class="m-lab">Unit Growth</span><span class="m-val">${p.UnitGrowth || '0'}%</span></div>
+                    <div class="m-item"><span class="m-lab">Unit Growth</span><span class="m-val">${fmtG(p.UnitGrowth)}</span></div>
                 </div>
 
                 <div class="btn-row">
+                    <button class="btn-tool btn-info" onclick="showDetails('${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-eye"></i> Details</button>
                     <button class="btn-tool btn-edit" onclick="handleAuth('EDIT', '${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-pen"></i> Edit</button>
                     <button class="btn-tool btn-del" onclick="handleAuth('DELETE', '${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Delete</button>
                 </div>
             </div>
         `).join('');
+    }
+
+    function showDetails(name) {
+        const p = dbRaw.find(x => x.ProductName === name);
+        let detailString = Object.entries(p)
+            .map(([k,v]) => `${k.toUpperCase()}: ${v || 'N/A'}`)
+            .join('\n');
+        alert(`--- Product Specifications ---\n\n${detailString}`);
     }
 
     function handleAuth(action, name) {
@@ -257,7 +269,9 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
         const payload = {};
         document.querySelectorAll('[id^="inp_"]').forEach(el => {
-            payload[el.id.replace('inp_', '')] = el.value;
+            // Key is the ID minus the 'inp_' prefix to match Google Sheet columns exactly
+            const keyName = el.id.replace('inp_', '');
+            payload[keyName] = el.value;
         });
         await syncToCloud(payload);
     }
@@ -268,12 +282,10 @@
         const n = document.getElementById('filterNote').value;
 
         dbFiltered = dbRaw.filter(p => {
-            // Deep Deep Search: Check every value in the product object
             const searchableText = Object.values(p).join(" ").toLowerCase();
             const matchesSearch = searchableText.includes(s);
             const matchesTeam = (!t || p.TeamName === t);
             const matchesNote = (!n || p.SpecialNote === n);
-            
             return matchesSearch && matchesTeam && matchesNote;
         });
         render();
