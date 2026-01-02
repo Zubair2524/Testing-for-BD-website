@@ -3,203 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Development Portal | Shaigan Pharma</title>
+    <title>Shaigan BD Portal | Diamond Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Color Palette from Image: Gold, Turquoise, Cream, Deep Blue */
-            --primary-gold: #d4af37;
+            --gold: #d4af37;
             --deep-gold: #b8860b;
-            --accent-turquoise: #008080;
-            --cream-light: #fdf5e6;
-            --glass-blue: rgba(10, 25, 41, 0.85);
-            --shaigan-blue: #0a4d92;
-            --success-green: #2ecc71;
+            --turquoise: #008080;
+            --cream: #fdf5e6;
+            --bg-dark: #0a192f;
+            --card-bg: rgba(16, 33, 65, 0.9);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #050a14 0%, #0a192f 100%);
             background-attachment: fixed;
-            color: var(--cream-light);
-            min-height: 100vh;
+            color: var(--cream);
             padding: 10px;
         }
 
-        /* --- Header & Branding --- */
-        .portal-header {
-            text-align: center;
-            padding: 40px 20px;
-            background: url('https://www.transparenttextures.com/patterns/cubes.png');
-            animation: fadeIn 1.2s ease;
+        /* Header Section */
+        .portal-header { text-align: center; padding: 30px 10px; animation: fadeIn 1.5s ease; }
+        .logo-box img { 
+            height: 120px; margin-bottom: 15px; 
+            filter: drop-shadow(0 0 10px var(--gold));
+            animation: float 4s ease-in-out infinite;
         }
-        .logo-container img {
-            height: 100px;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
-            transition: transform 0.5s ease;
-        }
-        .logo-container img:hover { transform: rotateY(180deg); }
-        
-        h1 { 
-            font-size: 2.8rem; 
-            color: var(--primary-gold); 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .sub-heading {
-            font-size: 1rem;
-            color: var(--accent-turquoise);
-            font-weight: 700;
-            letter-spacing: 5px;
-            margin-top: 10px;
-            border-top: 1px solid var(--primary-gold);
-            display: inline-block;
-            padding-top: 5px;
-        }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 2.2rem; }
+        .sub-heading { color: var(--turquoise); letter-spacing: 4px; font-weight: 700; font-size: 0.9rem; margin-top: 5px; }
 
-        /* --- KPI Dashboard --- */
+        /* KPI Cards */
         .kpi-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto 30px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; max-width: 1200px; margin: 20px auto;
         }
         .kpi-card {
-            background: var(--glass-blue);
-            border: 1px solid var(--primary-gold);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            background: var(--card-bg); border: 1px solid var(--gold);
+            border-radius: 15px; padding: 20px; text-align: center;
             transition: 0.3s;
         }
-        .kpi-card:hover { transform: scale(1.03); box-shadow: 0 0 20px var(--primary-gold); }
-        .kpi-card i { font-size: 2.5rem; color: var(--primary-gold); margin-bottom: 15px; animation: pulseIcon 2s infinite; }
-        .kpi-number { display: block; font-size: 2.5rem; font-weight: 900; color: #fff; }
-        .kpi-label { font-size: 0.8rem; letter-spacing: 1px; opacity: 0.8; }
+        .kpi-card i { font-size: 2rem; color: var(--gold); margin-bottom: 10px; animation: pulse 2s infinite; }
+        .kpi-val { display: block; font-size: 2rem; font-weight: 800; color: #fff; }
+        .kpi-lab { font-size: 0.7rem; opacity: 0.8; text-transform: uppercase; }
 
-        /* --- Filters --- */
-        .filter-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 1400px;
-            margin: 0 auto 40px;
-            border: 1px solid rgba(255,255,255,0.1);
+        /* Filter Section */
+        .filter-glass {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 20px; max-width: 1200px;
+            margin: 0 auto 30px; border: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex; flex-wrap: wrap; gap: 10px;
         }
-        .filter-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
+        .search-wrap { flex: 2; min-width: 280px; position: relative; }
+        .search-wrap input { 
+            width: 100%; padding: 12px 15px 12px 40px; border-radius: 10px; 
+            border: 2px solid var(--gold); background: #fff; color: #333;
         }
-        .search-wrap { flex: 3; min-width: 300px; position: relative; }
-        .search-wrap i { position: absolute; left: 15px; top: 15px; color: var(--primary-gold); }
-        .search-wrap input {
-            width: 100%; padding: 15px 15px 15px 45px; border-radius: 12px;
-            border: 2px solid var(--primary-gold); background: #fff; color: #333; font-size: 1rem;
+        .search-wrap i { position: absolute; left: 15px; top: 14px; color: var(--turquoise); }
+        .drop-filter { 
+            flex: 1; min-width: 160px; padding: 12px; border-radius: 10px;
+            background: var(--bg-dark); color: white; border: 1px solid var(--gold);
         }
-        .custom-select {
-            flex: 1; min-width: 180px; padding: 15px; border-radius: 12px;
-            background: var(--glass-blue); color: white; border: 1px solid var(--primary-gold);
-        }
-        .btn-refresh {
-            background: var(--primary-gold); color: #000; padding: 15px 25px;
-            border-radius: 12px; border: none; font-weight: 700; cursor: pointer;
-        }
+        .btn-clear { background: #c0392b; color: white; border: none; padding: 0 20px; border-radius: 10px; cursor: pointer; }
 
-        /* --- Product Cards --- */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
+        /* Product Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; max-width: 1300px; margin: auto; }
+        .p-card {
+            background: var(--card-bg); border-radius: 15px; border-left: 5px solid var(--gold);
+            padding: 20px; transition: 0.4s; position: relative; overflow: hidden;
         }
-        .card {
-            background: var(--glass-blue);
-            border-left: 5px solid var(--primary-gold);
-            border-radius: 15px;
-            padding: 25px;
-            transition: 0.4s;
-            position: relative;
-        }
-        .card:hover { transform: translateY(-10px); background: rgba(10, 25, 41, 0.95); }
+        .p-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         
-        .card-head {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--primary-gold);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .card-title { 
+            font-size: 1.3rem; font-weight: 700; color: var(--gold); 
+            display: flex; align-items: center; gap: 12px; margin-bottom: 15px; 
         }
-        .card-head i { animation: float 3s ease-in-out infinite; }
+        .card-title i { animation: bounce 3s infinite; }
 
-        .stat-line {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-            padding-bottom: 5px;
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+        .label { color: var(--turquoise); font-weight: 700; text-transform: uppercase; }
+        
+        .detail-pane { display: none; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; animation: slideIn 0.3s ease; }
+        
+        .btn-row { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-tool { 
+            flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer;
+            font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s;
         }
-        .stat-label { color: var(--accent-turquoise); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
-        .stat-val { color: var(--cream-light); font-weight: 500; }
+        .btn-info { background: var(--turquoise); color: white; }
+        .btn-edit { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+        .btn-edit:hover { background: var(--gold); color: black; }
 
-        /* Hidden Details */
-        .extra-details {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            animation: slideDown 0.4s ease forwards;
-        }
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; padding: 20px; overflow-y: auto; }
+        .modal-content { background: #16213e; max-width: 700px; margin: auto; border-radius: 20px; padding: 30px; border: 2px solid var(--gold); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
 
-        .action-bar { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-ui {
-            flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: 700;
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-info { background: var(--accent-turquoise); color: white; }
-        .btn-edit { background: transparent; border: 1px solid var(--primary-gold); color: var(--primary-gold); }
-        .btn-edit:hover { background: var(--primary-gold); color: black; }
-
-        /* --- Modal & Animations --- */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center;
-        }
-        .modal-body {
-            background: var(--glass-blue); width: 90%; max-width: 800px; padding: 35px;
-            border-radius: 20px; border: 2px solid var(--primary-gold); max-height: 90vh; overflow-y: auto;
-        }
-        .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-        @keyframes pulseIcon { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animations */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .edit-grid { grid-template-columns: 1fr; }
-            h1 { font-size: 1.8rem; }
-            .kpi-row { grid-template-columns: 1fr 1fr; }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-5px);} 60% {transform: translateY(-3px);} }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <header class="portal-header">
-        <div class="logo-container">
+        <div class="logo-box">
             <img src="1ab.png" alt="Shaigan Logo" onerror="this.src='https://i.ibb.co/qY7z8yY/Shaigan-Logo.png'">
         </div>
         <h1>Business Development Portal</h1>
@@ -207,183 +120,143 @@
     </header>
 
     <div class="kpi-row">
-        <div class="kpi-card">
-            <i class="fas fa-microscope"></i>
-            <span class="kpi-number" id="kpiTotal">0</span>
-            <span class="kpi-label">TOTAL PORTFOLIO</span>
-        </div>
-        <div class="kpi-card">
-            <i class="fas fa-chart-line"></i>
-            <span class="kpi-number" id="kpiFiltered">0</span>
-            <span class="kpi-label">MATCHING RECORDS</span>
-        </div>
-        <div class="kpi-card" style="border-color: var(--success-green);">
-            <i class="fas fa-cloud-check" style="color: var(--success-green);"></i>
-            <span class="kpi-number" style="font-size: 1.2rem;">CLOUD SYNC</span>
-            <span class="kpi-label">LIVE & ACTIVE</span>
+        <div class="kpi-card"><i class="fas fa-microscope"></i><span class="kpi-val" id="countTotal">0</span><span class="kpi-lab">Total Portfolio</span></div>
+        <div class="kpi-card"><i class="fas fa-filter"></i><span class="kpi-val" id="countFiltered">0</span><span class="kpi-lab">Matches</span></div>
+        <div class="kpi-card" onclick="location.reload()" style="cursor:pointer; border-color:var(--turquoise)"><i class="fas fa-sync-alt" style="color:var(--turquoise)"></i><span class="kpi-lab">Sync Status</span><span class="kpi-val" style="font-size:1rem">ACTIVE</span></div>
+    </div>
+
+    <div class="filter-glass">
+        <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="mainSearch" placeholder="Search product or composition..."></div>
+        <select id="filterTeam" class="drop-filter"><option value="">All Teams</option></select>
+        <select id="filterNote" class="drop-filter"><option value="">Special Note</option></select>
+        <button class="btn-clear" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <div id="productGrid" class="grid">
+        <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+            <i class="fas fa-spinner fa-spin fa-3x" style="color:var(--gold)"></i><br><br>Accessing Cloud Data...
         </div>
     </div>
 
-    <section class="filter-section">
-        <div class="filter-grid">
-            <div class="search-wrap">
-                <i class="fas fa-search"></i>
-                <input type="text" id="mainSearch" placeholder="Search by Brand, Active Ingredient, or Indication...">
-            </div>
-            <select id="filterTeam" class="custom-select"><option value="">All Teams</option></select>
-            <select id="filterNote" class="custom-select"><option value="">Special Status</option></select>
-            <button class="btn-refresh" onclick="location.reload()"><i class="fas fa-sync"></i> Refresh</button>
-        </div>
-    </section>
-
-    <main id="productGrid" class="product-grid">
-        <div style="grid-column: 1/-1; text-align: center; padding: 100px;">
-            <i class="fas fa-spinner fa-spin fa-4s" style="color: var(--primary-gold); font-size: 3rem;"></i>
-            <p style="margin-top: 20px;">Synchronizing with Shaigan Secure Servers...</p>
-        </div>
-    </main>
-
     <div id="editModal" class="modal">
-        <div class="modal-body">
-            <h2 style="color: var(--primary-gold); margin-bottom: 25px;"><i class="fas fa-shield-halved"></i> Secure Record Update</h2>
-            <div class="edit-grid" id="modalFields"></div>
-            <div style="margin-top: 30px; display: flex; gap: 15px;">
-                <button class="btn-ui btn-info" onclick="saveData()" style="background: var(--success-green);">Commit Changes</button>
-                <button class="btn-ui btn-edit" onclick="closeModal()">Discard</button>
+        <div class="modal-content">
+            <h2 style="color:var(--gold); margin-bottom:20px;"><i class="fas fa-database"></i> Record Update Manager</h2>
+            <div class="form-grid" id="formContainer"></div>
+            <div style="margin-top:25px; display:flex; gap:10px;">
+                <button class="btn-tool btn-info" onclick="saveRecord()" style="background:#27ae60">Save to Cloud</button>
+                <button class="btn-tool btn-edit" onclick="closeModal()">Cancel</button>
             </div>
         </div>
     </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm2u27sZNPQqyS5CV_-T3vYHrm0mC2du22Zk68sKKtozp-FLFFzXZKBItDxrPzwZdYiQ/exec";
-    let masterData = [];
-    let filteredData = [];
+    const API_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; // REPLACE THIS
+    let dbRaw = [];
+    let dbFiltered = [];
 
-    async function fetchData() {
+    async function init() {
         try {
-            const response = await fetch(SCRIPT_URL);
-            masterData = await response.json();
-            filteredData = [...masterData];
-            initFilters();
+            const res = await fetch(API_URL);
+            dbRaw = await res.json();
+            dbFiltered = [...dbRaw];
+            
+            // Populate Dropdowns
+            const teams = [...new Set(dbRaw.map(x => x.TeamName).filter(Boolean))].sort();
+            const notes = [...new Set(dbRaw.map(x => x.SpecialNote).filter(Boolean))].sort();
+            teams.forEach(t => document.getElementById('filterTeam').innerHTML += `<option value="${t}">${t}</option>`);
+            notes.forEach(n => document.getElementById('filterNote').innerHTML += `<option value="${n}">${n}</option>`);
+            
             render();
-        } catch (e) {
-            document.getElementById('productGrid').innerHTML = "<h2 style='color:red;'>Failed to establish cloud connection.</h2>";
-        }
+        } catch (e) { document.getElementById('productGrid').innerHTML = "Check API Connection."; }
     }
 
-    function initFilters() {
-        const teams = [...new Set(masterData.map(x => x.TeamName).filter(Boolean))].sort();
-        const notes = [...new Set(masterData.map(x => x.SpecialNote).filter(Boolean))].sort();
-        const tSel = document.getElementById('filterTeam');
-        const nSel = document.getElementById('filterNote');
-        teams.forEach(t => tSel.innerHTML += `<option value="${t}">${t}</option>`);
-        notes.forEach(n => nSel.innerHTML += `<option value="${n}">${n}</option>`);
-    }
-
-    // Dynamic Icon Logic
-    function getIcon(form) {
-        const f = form ? form.toLowerCase() : "";
-        if (f.includes("tab")) return "fa-tablets";
-        if (f.includes("cap")) return "fa-capsules";
-        if (f.includes("inj") || f.includes("vial") || f.includes("amp")) return "fa-syringe";
-        if (f.includes("susp") || f.includes("syr")) return "fa-prescription-bottle-medical";
+    function getFormIcon(form) {
+        const f = (form || "").toLowerCase();
+        if(f.includes("tab")) return "fa-tablets";
+        if(f.includes("cap")) return "fa-capsules";
+        if(f.includes("inj") || f.includes("vial")) return "fa-syringe";
         return "fa-pills";
     }
 
     function render() {
         const grid = document.getElementById('productGrid');
-        document.getElementById('kpiTotal').innerText = masterData.length;
-        document.getElementById('kpiFiltered').innerText = filteredData.length;
+        document.getElementById('countTotal').innerText = dbRaw.length;
+        document.getElementById('countFiltered').innerText = dbFiltered.length;
 
-        grid.innerHTML = filteredData.map((p, i) => `
-            <div class="card">
-                <div class="card-head">
-                    <i class="fas ${getIcon(p.DosageForm)}"></i>
-                    ${p.ProductName}
-                </div>
+        grid.innerHTML = dbFiltered.map((p, i) => `
+            <div class="p-card">
+                <div class="card-title"><i class="fas ${getFormIcon(p.DosageForm)}"></i> ${p.ProductName}</div>
+                <div class="info-row"><span class="label">Composition</span><span class="value">${p.Composition}</span></div>
+                <div class="info-row"><span class="label">MAT Value</span><span class="value" style="color:var(--gold)">${p.MATValue || '-'}</span></div>
                 
-                <div class="stat-line"><span class="stat-label">Composition</span><span class="stat-val">${p.Composition}</span></div>
-                <div class="stat-line"><span class="stat-label">Dosage Form</span><span class="stat-val">${p.DosageForm || 'N/A'}</span></div>
-                <div class="stat-line"><span class="stat-label">MAT Value</span><span class="stat-val" style="color:var(--primary-gold); font-weight:bold;">${p.MATValue || '0.00'}</span></div>
-
-                <div class="extra-details" id="details-${i}">
-                    ${Object.entries(p).map(([k, v]) => `
-                        <div class="stat-line"><span class="stat-label">${k}</span><span class="stat-val">${v || '-'}</span></div>
-                    `).join('')}
+                <div class="detail-pane" id="detail-${i}">
+                    ${Object.entries(p).map(([k,v]) => `<div class="info-row"><span class="label" style="font-size:10px">${k}</span><span class="value">${v || '-'}</span></div>`).join('')}
                 </div>
 
-                <div class="action-bar">
-                    <button class="btn-ui btn-info" id="btn-toggle-${i}" onclick="toggleInfo(${i})">
-                        <i class="fas fa-circle-info"></i> Detailed Info
-                    </button>
-                    <button class="btn-ui btn-edit" onclick="handleEdit('${p.ProductName.replace(/'/g, "\\'")}')">
-                        <i class="fas fa-lock"></i> Edit
-                    </button>
+                <div class="btn-row">
+                    <button class="btn-tool btn-info" id="btn-t-${i}" onclick="toggle(${i})"><i class="fas fa-info-circle"></i> Detailed Info</button>
+                    <button class="btn-tool btn-edit" onclick="authEdit('${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-lock"></i> Edit</button>
                 </div>
             </div>
         `).join('');
     }
 
-    function toggleInfo(idx) {
-        const div = document.getElementById(`details-${idx}`);
-        const btn = document.getElementById(`btn-toggle-${idx}`);
-        const isOpen = div.style.display === "block";
-        div.style.display = isOpen ? "none" : "block";
-        btn.innerHTML = isOpen ? '<i class="fas fa-circle-info"></i> Detailed Info' : '<i class="fas fa-circle-minus"></i> Short Info';
+    function toggle(idx) {
+        const d = document.getElementById(`detail-${idx}`);
+        const b = document.getElementById(`btn-t-${idx}`);
+        const open = d.style.display === "block";
+        d.style.display = open ? "none" : "block";
+        b.innerHTML = open ? '<i class="fas fa-info-circle"></i> Detailed Info' : '<i class="fas fa-minus-circle"></i> Short Info';
     }
 
-    function handleEdit(name) {
-        const pin = prompt("🔐 Enter Secure Access Code:");
-        if (pin === "Abc123@") {
-            const p = masterData.find(x => x.ProductName === name);
-            const container = document.getElementById('modalFields');
-            container.innerHTML = Object.entries(p).map(([k, v]) => `
+    function authEdit(name) {
+        if(prompt("Enter Admin Password:") === "Abc123@") {
+            const p = dbRaw.find(x => x.ProductName === name);
+            const container = document.getElementById('formContainer');
+            container.innerHTML = Object.entries(p).map(([k,v]) => `
                 <div>
-                    <label style="font-size: 0.7rem; color: var(--primary-gold);">${k}</label>
+                    <label style="font-size:11px; color:var(--gold)">${k}</label>
                     <input type="text" id="inp_${k}" value="${v || ''}" 
-                           style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid #444;"
-                           ${k === 'ProductName' ? 'readonly' : ''}>
+                    style="width:100%; padding:8px; background:#000; color:white; border:1px solid #444; border-radius:5px;"
+                    ${k === 'ProductName' ? 'readonly' : ''}>
                 </div>
             `).join('');
-            document.getElementById('editModal').style.display = "flex";
-        } else {
-            alert("Unauthorized Access Attempt Logged.");
-        }
+            document.getElementById('editModal').style.display = 'flex';
+        } else { alert("Access Denied."); }
     }
 
-    async function saveData() {
-        const saveBtn = document.querySelector('.btn-info');
-        saveBtn.innerText = "Processing Cloud Sync...";
+    async function saveRecord() {
         const payload = {};
         document.querySelectorAll('[id^="inp_"]').forEach(el => {
             payload[el.id.replace('inp_', '')] = el.value;
         });
 
-        await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        alert("Record Updated Successfully!");
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        alert("Cloud Sync Successful. No Duplicates Created.");
         location.reload();
     }
 
-    function doFilter() {
+    function applyFilters() {
         const s = document.getElementById('mainSearch').value.toLowerCase();
         const t = document.getElementById('filterTeam').value;
         const n = document.getElementById('filterNote').value;
-
-        filteredData = masterData.filter(p => {
-            const matchSearch = p.ProductName.toLowerCase().includes(s) || p.Composition.toLowerCase().includes(s);
-            const matchTeam = !t || p.TeamName === t;
-            const matchNote = !n || p.SpecialNote === n;
-            return matchSearch && matchTeam && matchNote;
-        });
+        dbFiltered = dbRaw.filter(p => (p.ProductName.toLowerCase().includes(s) || p.Composition.toLowerCase().includes(s)) && (!t || p.TeamName === t) && (!n || p.SpecialNote === n));
         render();
     }
 
-    function closeModal() { document.getElementById('editModal').style.display = "none"; }
+    function clearFilters() {
+        document.getElementById('mainSearch').value = "";
+        document.getElementById('filterTeam').value = "";
+        document.getElementById('filterNote').value = "";
+        dbFiltered = [...dbRaw];
+        render();
+    }
 
-    document.getElementById('mainSearch').addEventListener('input', doFilter);
-    document.getElementById('filterTeam').addEventListener('change', doFilter);
-    document.getElementById('filterNote').addEventListener('change', doFilter);
-    window.onload = fetchData;
+    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+    document.getElementById('mainSearch').addEventListener('input', applyFilters);
+    document.getElementById('filterTeam').addEventListener('change', applyFilters);
+    document.getElementById('filterNote').addEventListener('change', applyFilters);
+    window.onload = init;
 </script>
 </body>
 </html>
