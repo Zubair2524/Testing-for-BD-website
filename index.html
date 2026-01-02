@@ -3,190 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shaigan BD Portal | Master Diamond Edition</title>
+    <title>Shaigan BD Portal | Diamond Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS VARIABLES & THEMING */
         :root {
             --gold: #d4af37;
             --turquoise: #008080;
             --cream: #fdf5e6;
             --bg-dark: #050a14;
-            --card-bg: rgba(16, 33, 65, 0.98);
-            --danger: #e74c3c;
-            --success: #2ecc71;
+            --card-bg: rgba(16, 33, 65, 0.95);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
             background: radial-gradient(circle at center, #102141 0%, #050a14 100%);
             background-attachment: fixed;
             color: var(--cream);
-            padding: 15px;
-            line-height: 1.6;
+            padding: 10px;
         }
 
-        /* HEADER SECTION */
-        header { text-align: center; padding: 30px 10px; }
+        /* Header & Logo */
+        .portal-header { text-align: center; padding: 30px 10px; }
         .logo-box img { 
-            height: 100px; 
-            filter: drop-shadow(0 0 10px var(--gold)); 
-            margin-bottom: 15px;
-            animation: softFloat 4s ease-in-out infinite;
+            height: 110px; margin-bottom: 15px; 
+            filter: drop-shadow(0 0 10px var(--gold));
+            animation: float 4s ease-in-out infinite;
         }
-        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 3px; font-size: 2rem; }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 2.2rem; }
+        .sub-heading { color: var(--turquoise); letter-spacing: 4px; font-weight: 700; font-size: 0.9rem; margin-top: 5px; }
 
-        /* FILTER BAR */
-        .filter-bar { 
-            display: flex; flex-wrap: wrap; gap: 15px; max-width: 1200px; 
-            margin: 20px auto; background: rgba(255,255,255,0.05); 
-            padding: 20px; border-radius: 15px; border: 1px solid rgba(212,175,55,0.2);
+        /* KPI Dashboard */
+        .kpi-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; max-width: 1200px; margin: 20px auto;
         }
-        .search-box { flex: 2; min-width: 300px; position: relative; }
-        .search-box input { 
-            width: 100%; padding: 12px 15px 12px 45px; border-radius: 10px; 
-            border: 2px solid var(--gold); background: #fff; color: #111; font-weight: 600; 
+        .kpi-card {
+            background: var(--card-bg); border: 1px solid var(--gold);
+            border-radius: 15px; padding: 20px; text-align: center;
+            transition: 0.3s;
         }
-        .search-box i { position: absolute; left: 15px; top: 15px; color: var(--turquoise); font-size: 1.2rem; }
-        
-        select { 
-            flex: 1; padding: 12px; border-radius: 10px; background: #0a192f; 
-            color: #fff; border: 1px solid var(--gold); cursor: pointer; font-weight: 600;
-        }
+        .kpi-card i { font-size: 2rem; color: var(--gold); margin-bottom: 10px; animation: pulse 2s infinite; }
+        .kpi-val { display: block; font-size: 2rem; font-weight: 800; color: #fff; }
+        .kpi-lab { font-size: 0.7rem; opacity: 0.8; text-transform: uppercase; }
 
-        /* PRODUCT GRID & CARDS */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 25px; max-width: 1300px; margin: auto; }
-        
-        .p-card { 
-            background: var(--card-bg); border-radius: 15px; border-top: 4px solid var(--gold);
-            padding: 20px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        /* Filters */
+        .filter-glass {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 20px; max-width: 1200px;
+            margin: 0 auto 30px; border: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex; flex-wrap: wrap; gap: 10px;
         }
-        .p-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0,0,0,0.6); }
-        
-        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; color: var(--gold); font-weight: 800; font-size: 1.3rem; }
-        
-        .composition-text { font-size: 0.9rem; color: #cbd5e1; font-style: italic; display: block; margin-bottom: 10px; }
-        
-        .indication-tag { 
-            font-size: 0.75rem; color: #fff; background: var(--turquoise); 
-            padding: 4px 12px; border-radius: 50px; margin-bottom: 15px; 
-            display: inline-block; font-weight: 700; letter-spacing: 0.5px; 
+        .search-wrap { flex: 2; min-width: 280px; position: relative; }
+        .search-wrap input { 
+            width: 100%; padding: 12px 15px 12px 40px; border-radius: 10px; 
+            border: 2px solid var(--gold); background: #fff; color: #333;
         }
+        .search-wrap i { position: absolute; left: 15px; top: 14px; color: var(--turquoise); }
+        .drop-filter { 
+            flex: 1; min-width: 160px; padding: 12px; border-radius: 10px;
+            background: #0a192f; color: white; border: 1px solid var(--gold);
+        }
+        .btn-clear { background: #c0392b; color: white; border: none; padding: 0 20px; border-radius: 10px; cursor: pointer; font-weight: 700; }
 
-        /* DATA MATRIX */
-        .matrix { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; 
-            background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; margin-bottom: 20px;
+        /* Product Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; max-width: 1300px; margin: auto; }
+        .p-card {
+            background: var(--card-bg); border-radius: 15px; border-left: 5px solid var(--gold);
+            padding: 20px; transition: 0.4s; position: relative; overflow: hidden;
         }
-        .m-item { display: flex; flex-direction: column; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; }
-        .m-label { font-size: 0.65rem; color: var(--gold); text-transform: uppercase; font-weight: 800; }
-        .m-val { font-size: 1rem; font-weight: 700; color: #fff; }
-
-        /* BUTTONS */
-        .btn-group { display: flex; gap: 10px; }
-        .btn { 
-            flex: 1; padding: 10px; border-radius: 8px; cursor: pointer; border: none; 
-            font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; 
-            justify-content: center; gap: 8px; transition: 0.3s; 
-        }
-        .btn-edit { background: var(--gold); color: #000; }
-        .btn-edit:hover { background: #b8860b; }
-        .btn-del { background: transparent; border: 2px solid var(--danger); color: var(--danger); }
-        .btn-del:hover { background: var(--danger); color: #fff; }
-
-        /* MODAL SETTINGS */
-        .modal { 
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); 
-            z-index: 1000; padding: 20px; align-items: center; justify-content: center; 
-        }
-        .modal-body { 
-            background: #0f172a; width: 100%; max-width: 800px; padding: 30px; 
-            border-radius: 20px; border: 2px solid var(--gold); max-height: 90vh; overflow-y: auto; 
-        }
-        .f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media (max-width: 600px) { .f-grid { grid-template-columns: 1fr; } }
+        .p-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         
-        label { font-size: 11px; color: var(--gold); font-weight: bold; text-transform: uppercase; }
-        input { 
-            width: 100%; padding: 12px; background: #000; color: #fff; 
-            border: 1px solid #333; border-radius: 8px; margin-top: 5px; 
+        .card-title { 
+            font-size: 1.3rem; font-weight: 700; color: var(--gold); 
+            display: flex; align-items: center; gap: 12px; margin-bottom: 15px; 
         }
+        .card-title i { animation: bounce 3s infinite; }
 
-        @keyframes softFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+        .label { color: var(--turquoise); font-weight: 700; text-transform: uppercase; }
+        
+        .detail-pane { display: none; margin-top: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; animation: slideIn 0.3s ease; }
+        
+        .btn-row { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-tool { 
+            flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer;
+            font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s;
+        }
+        .btn-info { background: var(--turquoise); color: white; }
+        .btn-edit { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+        .btn-edit:hover { background: var(--gold); color: black; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; padding: 20px; overflow-y: auto; }
+        .modal-content { background: #16213e; max-width: 750px; margin: auto; border-radius: 20px; padding: 30px; border: 2px solid var(--gold); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-5px);} 60% {transform: translateY(-3px);} }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <header>
+    <header class="portal-header">
         <div class="logo-box">
             <img src="1ab.png" alt="Shaigan Logo" onerror="this.src='https://i.ibb.co/qY7z8yY/Shaigan-Logo.png'">
         </div>
         <h1>Business Development Portal</h1>
+        <div class="sub-heading">R&D | REGULATORY | BUSINESS DEVELOPMENT</div>
     </header>
 
-    <div class="filter-bar">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="search" placeholder="Search Brand, Composition or Indication...">
-        </div>
-        <select id="fTeam"><option value="">Filter by Team</option></select>
-        <button onclick="location.reload()" style="background:none; border:none; color:var(--gold); cursor:pointer; font-size: 1.3rem;">
-            <i class="fas fa-sync-alt"></i>
-        </button>
+    <div class="kpi-row">
+        <div class="kpi-card"><i class="fas fa-microscope"></i><span class="kpi-val" id="countTotal">0</span><span class="kpi-lab">Database Records</span></div>
+        <div class="kpi-card"><i class="fas fa-filter"></i><span class="kpi-val" id="countFiltered">0</span><span class="kpi-lab">Matches Found</span></div>
+        <div class="kpi-card" onclick="location.reload()" style="cursor:pointer; border-color:var(--turquoise)"><i class="fas fa-sync-alt" style="color:var(--turquoise)"></i><span class="kpi-lab">Sync Status</span><span class="kpi-val" style="font-size:1rem">ACTIVE</span></div>
     </div>
 
-    <div id="grid" class="grid">
+    <div class="filter-glass">
+        <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="mainSearch" placeholder="Search product or composition..."></div>
+        <select id="filterTeam" class="drop-filter"><option value="">All Teams</option></select>
+        <select id="filterNote" class="drop-filter"><option value="">Special Note</option></select>
+        <button class="btn-clear" onclick="clearFilters()">Clear All</button>
+    </div>
+
+    <div id="productGrid" class="grid">
         <div style="grid-column: 1/-1; text-align: center; padding: 100px;">
-            <i class="fas fa-atom fa-spin fa-4x" style="color:var(--gold)"></i>
-            <p style="margin-top:20px; letter-spacing:2px;">SYNCHRONIZING WITH CLOUD DATABASE...</p>
+            <i class="fas fa-circle-notch fa-spin fa-3x" style="color:var(--gold)"></i><br><br>Establishing Secure Link...
         </div>
     </div>
 
-    <div id="modal" class="modal">
-        <div class="modal-body">
-            <h2 style="color:var(--gold); margin-bottom:20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                <i class="fas fa-user-shield"></i> Administration Panel
-            </h2>
-            <div id="form" class="f-grid"></div>
-            <div class="btn-group" style="margin-top:30px;">
-                <button class="btn btn-edit" onclick="saveData()" id="saveBtn">Confirm & Update Cloud</button>
-                <button class="btn btn-del" onclick="closeM()" style="border-color:#555; color:#aaa;">Cancel</button>
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color:var(--gold); margin-bottom:20px; border-bottom: 1px solid var(--gold); padding-bottom: 10px;"><i class="fas fa-database"></i> Record Update Manager</h2>
+            <div class="form-grid" id="formContainer"></div>
+            <div style="margin-top:25px; display:flex; gap:10px;">
+                <button id="btnSave" class="btn-tool btn-info" onclick="saveRecord()" style="background:#27ae60">Save to Cloud</button>
+                <button class="btn-tool btn-edit" onclick="closeModal()">Cancel</button>
             </div>
         </div>
     </div>
 
 <script>
-    // 1. YOUR API CONFIGURATION
-    const API_URL = "https://script.google.com/macros/s/AKfycbytDYG9VFIY7TkOTMVMj5ZTdTZ_v6q84L8cDMAyfzImQRBHmieXDWG_R6maAzKFTTme2Q/exec"; // Ensure this is your latest URL
-                     
-    const ADMIN_PASS = "Abc123@";
-    let masterData = [];
+    const API_URL = "https://script.google.com/macros/s/AKfycbytDYG9VFIY7TkOTMVMj5ZTdTZ_v6q84L8cDMAyfzImQRBHmieXDWG_R6maAzKFTTme2Q/exec"; // PASTE NEW URL HERE
+    let dbRaw = [];
+    let dbFiltered = [];
 
-    // 2. INITIALIZE DATA FETCHING
-    async function initPortal() {
+    async function init() {
         try {
-            const response = await fetch(API_URL);
-            masterData = await response.json();
+            const res = await fetch(API_URL);
+            dbRaw = await res.json();
+            dbFiltered = [...dbRaw];
             
-            // Populate Team Filter
-            const teams = [...new Set(masterData.map(item => item.TeamName).filter(Boolean))].sort();
-            const teamSelect = document.getElementById('fTeam');
-            teams.forEach(t => teamSelect.innerHTML += `<option value="${t}">${t}</option>`);
+            const teams = [...new Set(dbRaw.map(x => x.TeamName).filter(Boolean))].sort();
+            const notes = [...new Set(dbRaw.map(x => x.SpecialNote).filter(Boolean))].sort();
             
-            renderPortal();
-        } catch (error) {
-            document.getElementById('grid').innerHTML = `
-                <div style="text-align:center; color:var(--danger); grid-column: 1/-1;">
-                    <i class="fas fa-exclamation-triangle fa-3x"></i>
-                    <p>Connection Failed. Please check your Google Deployment URL and ensure it is set to 'Anyone'.</p>
-                </div>`;
-        }
+            const tSel = document.getElementById('filterTeam');
+            const nSel = document.getElementById('filterNote');
+            teams.forEach(t => tSel.innerHTML += `<option value="${t}">${t}</option>`);
+            notes.forEach(n => nSel.innerHTML += `<option value="${n}">${n}</option>`);
+            
+            render();
+        } catch (e) { document.getElementById('productGrid').innerHTML = "<h3 style='color:red; text-align:center;'>Sync Failed: Failed to fetch</h3>"; }
     }
 
-    // 3. ICON LOGIC
-    function getDosageIcon(form) {
+    function getFormIcon(form) {
         const f = (form || "").toLowerCase();
         if(f.includes("tab")) return "fa-tablets";
         if(f.includes("cap")) return "fa-capsules";
@@ -194,121 +177,95 @@
         return "fa-pills";
     }
 
-    // 4. RENDER CARDS
-    function renderPortal() {
-        const searchTerm = document.getElementById('search').value.toLowerCase();
-        const teamFilter = document.getElementById('fTeam').value;
-        
-        const filtered = masterData.filter(p => {
-            const matchesSearch = (p.ProductName.toLowerCase().includes(searchTerm) || 
-                                   (p.Composition || "").toLowerCase().includes(searchTerm) || 
-                                   (p.Indication || "").toLowerCase().includes(searchTerm));
-            const matchesTeam = (!teamFilter || p.TeamName === teamFilter);
-            return matchesSearch && matchesTeam;
-        });
+    function render() {
+        const grid = document.getElementById('productGrid');
+        document.getElementById('countTotal').innerText = dbRaw.length;
+        document.getElementById('countFiltered').innerText = dbFiltered.length;
 
-        document.getElementById('grid').innerHTML = filtered.map(p => `
+        grid.innerHTML = dbFiltered.map((p, i) => `
             <div class="p-card">
-                <div class="card-header">
-                    <i class="fas ${getDosageIcon(p.DosageForm)}"></i> ${p.ProductName}
-                </div>
-                <span class="composition-text">${p.Composition || 'Active Ingredient Pending'}</span>
-                <div class="indication-tag">${p.Indication || 'General Therapeutics'}</div>
+                <div class="card-title"><i class="fas ${getFormIcon(p.DosageForm)}"></i> ${p.ProductName}</div>
+                <div class="info-row"><span class="label">Composition</span><span class="value">${p.Composition || '-'}</span></div>
+                <div class="info-row"><span class="label">MAT Value</span><span class="value" style="color:var(--gold); font-weight:bold;">${p.MATValue || '-'}</span></div>
                 
-                <div class="matrix">
-                    <div class="m-item">
-                        <span class="m-label">MAT Value</span>
-                        <span class="m-val" style="color:var(--gold)">${p.MATValue || '0'}</span>
-                    </div>
-                    <div class="m-item">
-                        <span class="m-label">Value Growth</span>
-                        <span class="m-val" style="color:${parseFloat(p.ValueGrowth) >= 0 ? 'var(--success)' : 'var(--danger)'}">
-                            ${p.ValueGrowth || '0'}%
-                        </span>
-                    </div>
-                    <div class="m-item">
-                        <span class="m-label">Unit Sales</span>
-                        <span class="m-val">${p.UnitSales || '0'}</span>
-                    </div>
-                    <div class="m-item">
-                        <span class="m-label">Unit Growth</span>
-                        <span class="m-val">${p.UnitGrowth || '0'}%</span>
-                    </div>
+                <div class="detail-pane" id="detail-${i}">
+                    ${Object.entries(p).map(([k,v]) => `<div class="info-row"><span class="label" style="font-size:10px">${k}</span><span class="value">${v || '-'}</span></div>`).join('')}
                 </div>
 
-                <div class="btn-group">
-                    <button class="btn btn-edit" onclick="handleAction('EDIT', '${p.ProductName.replace(/'/g, "\\'")}')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-del" onclick="handleAction('DELETE', '${p.ProductName.replace(/'/g, "\\'")}')">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </button>
+                <div class="btn-row">
+                    <button class="btn-tool btn-info" id="btn-t-${i}" onclick="toggle(${i})"><i class="fas fa-info-circle"></i> Details</button>
+                    <button class="btn-tool btn-edit" onclick="authEdit('${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-lock"></i> Edit</button>
                 </div>
             </div>
         `).join('');
     }
 
-    // 5. SECURE ACTIONS (EDIT/DELETE)
-    function handleAction(type, name) {
-        if(prompt("Enter Administrator Credentials (PIN):") !== ADMIN_PASS) {
-            return alert("Access Denied: Unauthorized Personnel.");
-        }
-
-        if(type === 'EDIT') {
-            const product = masterData.find(x => x.ProductName === name);
-            const formContainer = document.getElementById('form');
-            formContainer.innerHTML = Object.keys(product).map(key => `
-                <div>
-                    <label>${key}</label>
-                    <input id="field_${key}" value="${product[key] || ''}" ${key === 'ProductName' ? 'readonly' : ''}>
-                </div>
-            `).join('');
-            document.getElementById('modal').style.display = 'flex';
-        } 
-        
-        else if(type === 'DELETE') {
-            if(confirm(`WARNING: Are you sure you want to PERMANENTLY delete "${name}" from the cloud database?`)) {
-                processCloudSync({ ProductName: name, action: "DELETE" });
-            }
-        }
+    function toggle(idx) {
+        const d = document.getElementById(`detail-${idx}`);
+        const b = document.getElementById(`btn-t-${idx}`);
+        const open = d.style.display === "block";
+        d.style.display = open ? "none" : "block";
+        b.innerHTML = open ? '<i class="fas fa-info-circle"></i> Details' : '<i class="fas fa-minus-circle"></i> Hide';
     }
 
-    // 6. CLOUD SYNCHRONIZATION
-    async function saveData() {
-        const btn = document.getElementById('saveBtn');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> UPDATING...';
+    function authEdit(name) {
+        if(prompt("Enter Admin Password:") === "Abc123@") {
+            const p = dbRaw.find(x => x.ProductName === name);
+            const container = document.getElementById('formContainer');
+            container.innerHTML = Object.entries(p).map(([k,v]) => `
+                <div>
+                    <label style="font-size:11px; color:var(--gold); font-weight:700;">${k}</label>
+                    <input type="text" id="inp_${k}" value="${v || ''}" 
+                    style="width:100%; padding:10px; background:#000; color:white; border:1px solid #444; border-radius:5px;"
+                    ${k === 'ProductName' ? 'readonly' : ''}>
+                </div>
+            `).join('');
+            document.getElementById('editModal').style.display = 'flex';
+        } else { alert("Access Denied."); }
+    }
+
+    async function saveRecord() {
+        const btn = document.getElementById('btnSave');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
         btn.disabled = true;
 
         const payload = {};
-        document.querySelectorAll('[id^="field_"]').forEach(input => {
-            const key = input.id.replace('field_', '');
-            payload[key] = input.value;
+        document.querySelectorAll('[id^="inp_"]').forEach(el => {
+            payload[el.id.replace('inp_', '')] = el.value;
         });
 
-        await processCloudSync(payload);
-    }
-
-    async function processCloudSync(payload) {
         try {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(payload)
-            });
-            alert("Cloud Sync Successful.");
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            alert("Cloud Update Successful! Same record updated.");
             location.reload();
         } catch (e) {
-            alert("Sync Failed. Please check connectivity.");
-            location.reload();
+            alert("Sync Error. Please try again.");
+            btn.innerHTML = 'Save to Cloud';
+            btn.disabled = false;
         }
     }
 
-    function closeM() { document.getElementById('modal').style.display = 'none'; }
-    document.getElementById('search').addEventListener('input', renderPortal);
-    document.getElementById('fTeam').addEventListener('change', renderPortal);
-    
-    // START PORTAL
-    window.onload = initPortal;
+    function applyFilters() {
+        const s = document.getElementById('mainSearch').value.toLowerCase();
+        const t = document.getElementById('filterTeam').value;
+        const n = document.getElementById('filterNote').value;
+        dbFiltered = dbRaw.filter(p => (p.ProductName.toLowerCase().includes(s) || p.Composition.toLowerCase().includes(s)) && (!t || p.TeamName === t) && (!n || p.SpecialNote === n));
+        render();
+    }
+
+    function clearFilters() {
+        document.getElementById('mainSearch').value = "";
+        document.getElementById('filterTeam').value = "";
+        document.getElementById('filterNote').value = "";
+        dbFiltered = [...dbRaw];
+        render();
+    }
+
+    function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+    document.getElementById('mainSearch').addEventListener('input', applyFilters);
+    document.getElementById('filterTeam').addEventListener('change', applyFilters);
+    document.getElementById('filterNote').addEventListener('change', applyFilters);
+    window.onload = init;
 </script>
 </body>
 </html>
