@@ -80,8 +80,13 @@
         .p-card {
             background: var(--card-bg); border-radius: 15px; border-top: 4px solid var(--gold);
             padding: 20px; transition: 0.4s; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; height: 100%;
         }
-        .p-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+        .p-card.expanded {
+            grid-column: 1 / -1;
+            border-left: 5px solid var(--gold);
+        }
+        .p-card:hover:not(.expanded) { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
         
         .card-title { 
             font-size: 1.3rem; font-weight: 700; color: var(--gold); 
@@ -97,13 +102,20 @@
         .m-lab { font-size: 0.6rem; color: var(--gold); text-transform: uppercase; font-weight: 800; }
         .m-val { font-size: 0.9rem; font-weight: 700; color: #fff; }
 
-        .btn-row { display: flex; gap: 10px; margin-top: 15px; }
+        /* Enriched Details Area */
+        .extra-details {
+            margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--gold);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .btn-row { display: flex; gap: 10px; margin-top: auto; padding-top: 15px; }
         .btn-tool { 
             flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer;
             font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; font-size: 0.8rem;
         }
         .btn-edit { background: var(--gold); color: black; }
-        .btn-info { background: #34495e; color: white; }
+        .btn-info { background: var(--turquoise); color: white; }
         .btn-del { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
         .btn-del:hover { background: var(--danger); color: white; }
 
@@ -113,6 +125,7 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
         /* Animations */
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
@@ -141,7 +154,7 @@
     </div>
 
     <div class="filter-glass">
-        <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="mainSearch" placeholder="Search anything: brand, market, team, notes..."></div>
+        <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="mainSearch" placeholder="Search brands, market, team..."></div>
         <select id="filterTeam" class="drop-filter"><option value="">All Teams</option></select>
         <select id="filterNote" class="drop-filter"><option value="">Special Note</option></select>
         <button class="btn-clear" onclick="clearFilters()">Reset Portal</button>
@@ -169,6 +182,7 @@
     const ADMIN_PASS = "Abc123@";
     let dbRaw = [];
     let dbFiltered = [];
+    let expandedId = null;
 
     async function init() {
         try {
@@ -189,15 +203,6 @@
         } catch (e) { document.getElementById('productGrid').innerHTML = "<h3 style='color:red; text-align:center;'>Database Offline</h3>"; }
     }
 
-    function getFormIcon(form) {
-        const f = (form || "").toLowerCase();
-        if(f.includes("tab")) return "fa-tablets";
-        if(f.includes("cap")) return "fa-capsules";
-        if(f.includes("inj") || f.includes("vial")) return "fa-syringe";
-        return "fa-pills";
-    }
-
-    // Helper to clean growth display
     const fmtG = (v) => (!v || isNaN(v)) ? (v || '0') : `${v}%`;
 
     function render() {
@@ -205,8 +210,10 @@
         document.getElementById('countTotal').innerText = dbRaw.length;
         document.getElementById('countFiltered').innerText = dbFiltered.length;
 
-        grid.innerHTML = dbFiltered.map((p, i) => `
-            <div class="p-card">
+        grid.innerHTML = dbFiltered.map((p, i) => {
+            const isExp = expandedId === p.ProductName;
+            return `
+            <div class="p-card ${isExp ? 'expanded' : ''}" id="card-${i}">
                 <div class="card-title"><i class="fas ${getFormIcon(p.DosageForm)}"></i> ${p.ProductName}</div>
                 <span class="comp-line">${p.Composition || 'Composition Pending'}</span>
                 <div class="ind-pill">${p.Indication || 'Therapeutic Area'}</div>
@@ -218,21 +225,42 @@
                     <div class="m-item"><span class="m-lab">Unit Growth</span><span class="m-val">${fmtG(p.UnitGrowth)}</span></div>
                 </div>
 
+                ${isExp ? `
+                <div class="extra-details">
+                    ${Object.entries(p).map(([k,v]) => {
+                        if(['ProductName','Composition','Indication','MATValue','ValueGrowth','UnitSales','UnitGrowth'].includes(k)) return '';
+                        return `<div class="m-item"><span class="m-lab">${k}</span><span class="m-val">${v || '---'}</span></div>`;
+                    }).join('')}
+                </div>
+                ` : ''}
+
                 <div class="btn-row">
-                    <button class="btn-tool btn-info" onclick="showDetails('${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-eye"></i> Details</button>
+                    <button class="btn-tool btn-info" onclick="toggleDetails('${p.ProductName.replace(/'/g, "\\'")}')">
+                        <i class="fas ${isExp ? 'fa-compress-alt' : 'fa-expand-alt'}"></i> ${isExp ? 'Compact View' : 'More Details'}
+                    </button>
                     <button class="btn-tool btn-edit" onclick="handleAuth('EDIT', '${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-pen"></i> Edit</button>
                     <button class="btn-tool btn-del" onclick="handleAuth('DELETE', '${p.ProductName.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i> Delete</button>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
-    function showDetails(name) {
-        const p = dbRaw.find(x => x.ProductName === name);
-        let detailString = Object.entries(p)
-            .map(([k,v]) => `${k.toUpperCase()}: ${v || 'N/A'}`)
-            .join('\n');
-        alert(`--- Product Specifications ---\n\n${detailString}`);
+    function toggleDetails(name) {
+        expandedId = (expandedId === name) ? null : name;
+        render();
+        if(expandedId) {
+            setTimeout(() => {
+                document.querySelector('.expanded').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+    }
+
+    function getFormIcon(form) {
+        const f = (form || "").toLowerCase();
+        if(f.includes("tab")) return "fa-tablets";
+        if(f.includes("cap")) return "fa-capsules";
+        if(f.includes("inj") || f.includes("vial")) return "fa-syringe";
+        return "fa-pills";
     }
 
     function handleAuth(action, name) {
@@ -259,7 +287,7 @@
     async function syncToCloud(payload) {
         try {
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            alert("Database Updated Successfully.");
+            alert("Cloud Sync Successful.");
             location.reload();
         } catch (e) { alert("Sync Failed."); }
     }
@@ -269,7 +297,6 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
         const payload = {};
         document.querySelectorAll('[id^="inp_"]').forEach(el => {
-            // Key is the ID minus the 'inp_' prefix to match Google Sheet columns exactly
             const keyName = el.id.replace('inp_', '');
             payload[keyName] = el.value;
         });
@@ -280,13 +307,9 @@
         const s = document.getElementById('mainSearch').value.toLowerCase();
         const t = document.getElementById('filterTeam').value;
         const n = document.getElementById('filterNote').value;
-
         dbFiltered = dbRaw.filter(p => {
             const searchableText = Object.values(p).join(" ").toLowerCase();
-            const matchesSearch = searchableText.includes(s);
-            const matchesTeam = (!t || p.TeamName === t);
-            const matchesNote = (!n || p.SpecialNote === n);
-            return matchesSearch && matchesTeam && matchesNote;
+            return searchableText.includes(s) && (!t || p.TeamName === t) && (!n || p.SpecialNote === n);
         });
         render();
     }
