@@ -85,7 +85,7 @@
         }
         .dot { height: 8px; width: 8px; background-color: #2ecc71; border-radius: 50%; display: inline-block; animation: blink 2s infinite; }
 
-        /* Icons */
+        /* Glassmorphic Icons */
         .icon-circle {
             width: 60px; height: 60px; background: var(--icon-glass); 
             border-radius: 50%; display: flex; align-items: center; 
@@ -225,44 +225,35 @@
     const savedTheme = localStorage.getItem('selected-theme') || 'dark';
     setTheme(savedTheme);
 
-    // FIXED & ENRICHED: Dropdown with Count Badge
+    // FIXED: Reliable Dropdown Population
     async function init() {
         try {
             const res = await fetch(API_URL);
             dbRaw = await res.json();
             dbFiltered = [...dbRaw];
             
-            // Generate counts for badges
-            const teamCounts = dbRaw.reduce((acc, curr) => {
-                if(curr.TeamName) acc[curr.TeamName] = (acc[curr.TeamName] || 0) + 1;
-                return acc;
-            }, {});
-
-            const noteCounts = dbRaw.reduce((acc, curr) => {
-                if(curr.SpecialNote) acc[curr.SpecialNote] = (acc[curr.SpecialNote] || 0) + 1;
-                return acc;
-            }, {});
-            
-            const teams = Object.keys(teamCounts).sort();
-            const notes = Object.keys(noteCounts).sort();
+            const teams = [...new Set(dbRaw.map(x => x.TeamName).filter(Boolean))].sort();
+            const notes = [...new Set(dbRaw.map(x => x.SpecialNote).filter(Boolean))].sort();
             
             const tSel = document.getElementById('filterTeam');
             const nSel = document.getElementById('filterNote');
             
+            // Clean Start
             tSel.innerHTML = '<option value="">All Teams</option>';
             nSel.innerHTML = '<option value="">Special Note</option>';
             
+            // Populate via creation to avoid HTML string breaking
             teams.forEach(t => {
                 let opt = document.createElement('option');
                 opt.value = t;
-                opt.textContent = `${t} (${teamCounts[t]})`; // Added Badge
+                opt.textContent = t;
                 tSel.appendChild(opt);
             });
 
             notes.forEach(n => {
                 let opt = document.createElement('option');
                 opt.value = n;
-                opt.textContent = `${n} (${noteCounts[n]})`; // Added Badge
+                opt.textContent = n;
                 nSel.appendChild(opt);
             });
             
@@ -277,14 +268,19 @@
     // UPDATED: Advanced Medical Icons
     function getFormIcon(form) {
         const f = (form || "").toLowerCase();
+        // Bottle: Suspension, Syrup, Liquids, Drops
         if(f.includes("suspension") || f.includes("syrup") || f.includes("liq") || f.includes("drop")) 
             return "fa-prescription-bottle";
+        // Injection: Infusion, Vial, Injection, Ampoule
         if(f.includes("inj") || f.includes("vial") || f.includes("infusion") || f.includes("amp")) 
             return "fa-syringe";
+        // Cream: Ointment, Cream, Lotion, Gel
         if(f.includes("cream") || f.includes("oint") || f.includes("lotion") || f.includes("gel")) 
             return "fa-pump-medical";
+        // Solids
         if(f.includes("tab")) return "fa-tablets";
         if(f.includes("cap")) return "fa-capsules";
+        
         return "fa-pills"; 
     }
 
@@ -391,17 +387,14 @@
         await syncToCloud(payload);
     }
 
-    // FIXED: Correct Filter Logic
+    // FIXED: Filter Logic
     function applyFilters() {
         const s = document.getElementById('mainSearch').value.toLowerCase();
         const t = document.getElementById('filterTeam').value;
         const n = document.getElementById('filterNote').value;
         dbFiltered = dbRaw.filter(p => {
             const searchableText = Object.values(p).join(" ").toLowerCase();
-            const matchSearch = searchableText.includes(s);
-            const matchTeam = !t || p.TeamName === t;
-            const matchNote = !n || p.SpecialNote === n;
-            return matchSearch && matchTeam && matchNote;
+            return searchableText.includes(s) && (!t || p.TeamName === t) && (!n || p.SpecialNote === n);
         });
         render();
     }
