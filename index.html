@@ -245,7 +245,6 @@
 
     <div class="filter-glass">
         <div class="search-wrap"><i class="fas fa-search"></i><input type="text" id="mainSearch" placeholder="Search brands, generics, or indication..."></div>
-        <select id="filterTeam" class="drop-filter"><option value="">All Teams</option></select>
         <select id="filterNote" class="drop-filter"><option value="">Special Note</option></select>
         <button class="btn-clear" onclick="clearFilters()"><i class="fas fa-undo"></i> Reset</button>
     </div>
@@ -291,18 +290,6 @@
             dbRaw = await res.json();
             dbFiltered = [...dbRaw];
             
-            // --- FIXED: TEAM FILTER & COUNT LOGIC ---
-            
-            // 1. Logic to count Teams specifically from the 'TeamName' column
-            const teamCounts = {};
-            dbRaw.forEach(item => {
-                // Ensure we handle empty values and trim spaces for clean filtering
-                const t = (item.TeamName || "").trim();
-                if(t) {
-                    teamCounts[t] = (teamCounts[t] || 0) + 1;
-                }
-            });
-
             // 2. Logic to count Notes
             const noteCounts = {};
             dbRaw.forEach(item => {
@@ -312,21 +299,11 @@
                 }
             });
             
-            const tSel = document.getElementById('filterTeam');
             const nSel = document.getElementById('filterNote');
             
-            // Reset Dropdowns
-            tSel.innerHTML = `<option value="">All Teams (${dbRaw.length})</option>`;
+            // Reset Dropdown
             nSel.innerHTML = `<option value="">All Notes (${dbRaw.length})</option>`;
             
-            // Populate Sorted Teams with Counts
-            Object.keys(teamCounts).sort().forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t;
-                opt.textContent = `${t} (${teamCounts[t]})`; // Badge Format
-                tSel.appendChild(opt);
-            });
-
             // Populate Sorted Notes with Counts
             Object.keys(noteCounts).sort().forEach(n => {
                 const opt = document.createElement('option');
@@ -472,26 +449,19 @@
 
     function applyFilters() {
         const s = document.getElementById('mainSearch').value.toLowerCase();
-        const t = document.getElementById('filterTeam').value;
         const n = document.getElementById('filterNote').value;
         
         dbFiltered = dbRaw.filter(p => {
             const searchableText = Object.values(p).join(" ").toLowerCase();
-            // --- FIXED: Comparison Logic ---
-            // Ensure we compare against the same trimmed/formatted value used in the dropdown
-            const teamVal = (p.TeamName || "").trim();
             const noteVal = (p.SpecialNote || "").trim();
             
-            return searchableText.includes(s) 
-                && (!t || teamVal === t) 
-                && (!n || noteVal === n);
+            return searchableText.includes(s) && (!n || noteVal === n);
         });
         render();
     }
 
     function clearFilters() {
         document.getElementById('mainSearch').value = "";
-        document.getElementById('filterTeam').value = "";
         document.getElementById('filterNote').value = "";
         dbFiltered = [...dbRaw];
         render();
@@ -499,7 +469,6 @@
 
     function closeModal() { document.getElementById('editModal').style.display = 'none'; }
     document.getElementById('mainSearch').addEventListener('input', applyFilters);
-    document.getElementById('filterTeam').addEventListener('change', applyFilters);
     document.getElementById('filterNote').addEventListener('change', applyFilters);
     window.onload = init;
 </script>
