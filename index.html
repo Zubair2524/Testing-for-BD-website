@@ -9,57 +9,16 @@
 
 <style>
 /* ============================================================
-   FONT SYSTEM — controlled via data-font on <html>
-   Default: Arial. All fonts are system fonts (no import needed).
+   FONT SYSTEM
+   One CSS variable, set on :root by JS → inherits everywhere.
+   !important on * ensures it wins over any element-specific rule.
    ============================================================ */
-:root {
-    --body-font: Arial, Helvetica, sans-serif;
-}
+:root { --font: Arial, Helvetica, sans-serif; }
 
-/* Arial (default) */
-html[data-font="arial"] body,
-html[data-font="arial"] input,
-html[data-font="arial"] select,
-html[data-font="arial"] button,
-html[data-font="arial"] textarea { font-family: Arial, Helvetica, sans-serif; }
-html[data-font="arial"] .site-title,
-html[data-font="arial"] .card-name { font-family: Arial, Helvetica, sans-serif; font-weight: 900; }
+*, *::before, *::after { font-family: var(--font) !important; }
 
-/* Times New Roman */
-html[data-font="times"] body,
-html[data-font="times"] input,
-html[data-font="times"] select,
-html[data-font="times"] button,
-html[data-font="times"] textarea { font-family: 'Times New Roman', Times, serif; }
-html[data-font="times"] .site-title,
-html[data-font="times"] .card-name { font-family: 'Times New Roman', Times, serif; }
-
-/* Calibri */
-html[data-font="calibri"] body,
-html[data-font="calibri"] input,
-html[data-font="calibri"] select,
-html[data-font="calibri"] button,
-html[data-font="calibri"] textarea { font-family: Calibri, 'Carlito', sans-serif; }
-html[data-font="calibri"] .site-title,
-html[data-font="calibri"] .card-name { font-family: Calibri, 'Carlito', sans-serif; font-weight: 800; }
-
-/* Century Gothic */
-html[data-font="gothic"] body,
-html[data-font="gothic"] input,
-html[data-font="gothic"] select,
-html[data-font="gothic"] button,
-html[data-font="gothic"] textarea { font-family: 'Century Gothic', 'AppleGothic', 'Gill Sans', sans-serif; }
-html[data-font="gothic"] .site-title,
-html[data-font="gothic"] .card-name { font-family: 'Century Gothic', 'AppleGothic', 'Gill Sans', sans-serif; font-weight: 700; letter-spacing: 2px; }
-
-/* Calisto MT */
-html[data-font="calisto"] body,
-html[data-font="calisto"] input,
-html[data-font="calisto"] select,
-html[data-font="calisto"] button,
-html[data-font="calisto"] textarea { font-family: 'Calisto MT', 'Bookman Old Style', Georgia, serif; }
-html[data-font="calisto"] .site-title,
-html[data-font="calisto"] .card-name { font-family: 'Calisto MT', 'Bookman Old Style', Georgia, serif; font-style: italic; }
+/* Preserve Space Mono only for numeric KPI values */
+.kpi-val, .m-val { font-family: 'Space Mono', monospace !important; }
 
 
 :root[data-theme="dark"] {
@@ -79,7 +38,6 @@ html[data-font="calisto"] .card-name { font-family: 'Calisto MT', 'Bookman Old S
     --mesh2: #0d2847;
     --card-shadow: 0 8px 32px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
     --shimmer: rgba(255,255,255,.04);
-    --body-font: 'Calibri','Carlito',sans-serif;
 }
 :root[data-theme="professional"] {
     --bg-base: #f0f4fb;
@@ -98,7 +56,6 @@ html[data-font="calisto"] .card-name { font-family: 'Calisto MT', 'Bookman Old S
     --mesh2: #b8ceee;
     --card-shadow: 0 6px 24px rgba(30,80,160,.12), inset 0 1px 0 rgba(255,255,255,.9);
     --shimmer: rgba(30,120,220,.04);
-    --body-font: 'Calibri','Carlito',sans-serif;
 }
 :root[data-theme="aurora"] {
     --bg-base: #08051a;
@@ -117,7 +74,6 @@ html[data-font="calisto"] .card-name { font-family: 'Calisto MT', 'Bookman Old S
     --mesh2: #160838;
     --card-shadow: 0 8px 32px rgba(100,0,180,.4), inset 0 1px 0 rgba(255,255,255,.06);
     --shimmer: rgba(180,80,255,.05);
-    --body-font: 'Calibri','Carlito',sans-serif;
 }
 
 /* ============================================================
@@ -128,7 +84,7 @@ html[data-font="calisto"] .card-name { font-family: 'Calisto MT', 'Bookman Old S
 }
 html { scroll-behavior: smooth; }
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font);
     background-color: var(--bg-base);
     color: var(--text-main);
     min-height: 100vh;
@@ -900,10 +856,18 @@ function setTheme(theme) {
 }
 
 /* ------- FONT ------- */
+const FONT_STACKS = {
+    arial:   'Arial, Helvetica, sans-serif',
+    times:   '"Times New Roman", Times, serif',
+    calibri: 'Calibri, Carlito, sans-serif',
+    gothic:  '"Century Gothic", AppleGothic, "Gill Sans", sans-serif',
+    calisto: '"Calisto MT", "Bookman Old Style", Georgia, serif'
+};
+
 function setFont(fontKey) {
-    document.documentElement.setAttribute('data-font', fontKey);
+    const stack = FONT_STACKS[fontKey] || FONT_STACKS.arial;
+    document.documentElement.style.setProperty('--font', stack);
     localStorage.setItem('bd-font', fontKey);
-    /* Sync the dropdown selection */
     const sel = document.getElementById('fontSelect');
     if (sel) sel.value = fontKey;
 }
