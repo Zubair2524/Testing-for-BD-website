@@ -5,12 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shaigan BD Portal | Diamond Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
-   THEME SYSTEM
+   FONT SYSTEM — controlled via data-font on <html>
+   Default: Arial. All fonts are system fonts (no import needed).
    ============================================================ */
+:root {
+    --body-font: Arial, Helvetica, sans-serif;
+}
+
+/* Arial (default) */
+html[data-font="arial"] body,
+html[data-font="arial"] input,
+html[data-font="arial"] select,
+html[data-font="arial"] button,
+html[data-font="arial"] textarea { font-family: Arial, Helvetica, sans-serif; }
+html[data-font="arial"] .site-title,
+html[data-font="arial"] .card-name { font-family: Arial, Helvetica, sans-serif; font-weight: 900; }
+
+/* Times New Roman */
+html[data-font="times"] body,
+html[data-font="times"] input,
+html[data-font="times"] select,
+html[data-font="times"] button,
+html[data-font="times"] textarea { font-family: 'Times New Roman', Times, serif; }
+html[data-font="times"] .site-title,
+html[data-font="times"] .card-name { font-family: 'Times New Roman', Times, serif; }
+
+/* Calibri */
+html[data-font="calibri"] body,
+html[data-font="calibri"] input,
+html[data-font="calibri"] select,
+html[data-font="calibri"] button,
+html[data-font="calibri"] textarea { font-family: Calibri, 'Carlito', sans-serif; }
+html[data-font="calibri"] .site-title,
+html[data-font="calibri"] .card-name { font-family: Calibri, 'Carlito', sans-serif; font-weight: 800; }
+
+/* Century Gothic */
+html[data-font="gothic"] body,
+html[data-font="gothic"] input,
+html[data-font="gothic"] select,
+html[data-font="gothic"] button,
+html[data-font="gothic"] textarea { font-family: 'Century Gothic', 'AppleGothic', 'Gill Sans', sans-serif; }
+html[data-font="gothic"] .site-title,
+html[data-font="gothic"] .card-name { font-family: 'Century Gothic', 'AppleGothic', 'Gill Sans', sans-serif; font-weight: 700; letter-spacing: 2px; }
+
+/* Calisto MT */
+html[data-font="calisto"] body,
+html[data-font="calisto"] input,
+html[data-font="calisto"] select,
+html[data-font="calisto"] button,
+html[data-font="calisto"] textarea { font-family: 'Calisto MT', 'Bookman Old Style', Georgia, serif; }
+html[data-font="calisto"] .site-title,
+html[data-font="calisto"] .card-name { font-family: 'Calisto MT', 'Bookman Old Style', Georgia, serif; font-style: italic; }
+
+
 :root[data-theme="dark"] {
     --bg-base: #060d1a;
     --bg-mid:  #0a1628;
@@ -28,6 +79,7 @@
     --mesh2: #0d2847;
     --card-shadow: 0 8px 32px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
     --shimmer: rgba(255,255,255,.04);
+    --body-font: 'Calibri','Carlito',sans-serif;
 }
 :root[data-theme="professional"] {
     --bg-base: #f0f4fb;
@@ -46,6 +98,7 @@
     --mesh2: #b8ceee;
     --card-shadow: 0 6px 24px rgba(30,80,160,.12), inset 0 1px 0 rgba(255,255,255,.9);
     --shimmer: rgba(30,120,220,.04);
+    --body-font: 'Calibri','Carlito',sans-serif;
 }
 :root[data-theme="aurora"] {
     --bg-base: #08051a;
@@ -64,6 +117,7 @@
     --mesh2: #160838;
     --card-shadow: 0 8px 32px rgba(100,0,180,.4), inset 0 1px 0 rgba(255,255,255,.06);
     --shimmer: rgba(180,80,255,.05);
+    --body-font: 'Calibri','Carlito',sans-serif;
 }
 
 /* ============================================================
@@ -74,7 +128,7 @@
 }
 html { scroll-behavior: smooth; }
 body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     background-color: var(--bg-base);
     color: var(--text-main);
     min-height: 100vh;
@@ -143,27 +197,74 @@ body {
 .site-wrap { position: relative; z-index: 1; padding: 0 24px 80px; max-width: 1340px; margin: 0 auto; }
 
 /* ============================================================
-   THEME SWITCHER
+   CONTROLS PANEL (themes + fonts) — fixed top-right
    ============================================================ */
-.theme-switcher {
+.controls-panel {
     position: fixed; top: 22px; right: 22px; z-index: 1000;
-    display: flex; gap: 8px;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+}
+
+/* Theme row */
+.theme-switcher {
+    display: flex; gap: 8px; align-items: center;
     background: var(--glass-bg); backdrop-filter: blur(18px);
-    padding: 8px 12px; border-radius: 50px;
+    padding: 8px 14px; border-radius: 50px;
     border: 1px solid var(--glass-border);
     box-shadow: 0 4px 20px rgba(0,0,0,.3);
 }
-.theme-btn {
-    width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
-    border: 2px solid rgba(255,255,255,.25);
-    transition: transform .25s, border-color .25s;
-    position: relative;
+.ctrl-label {
+    font-size: .58rem; font-weight: 800; letter-spacing: 1.8px;
+    text-transform: uppercase; color: var(--text-dim);
+    white-space: nowrap;
 }
-.theme-btn:hover { transform: scale(1.25); border-color: rgba(255,255,255,.7); }
-.theme-btn[data-active]::after {
-    content: '';
-    position: absolute; inset: -4px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,.6);
+.theme-btn {
+    width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+    border: 2px solid rgba(255,255,255,.25);
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+    position: relative; flex-shrink: 0;
+}
+.theme-btn:hover { transform: scale(1.3); border-color: rgba(255,255,255,.7); }
+.theme-btn.active {
+    border-color: rgba(255,255,255,.9);
+    box-shadow: 0 0 0 3px rgba(255,255,255,.2);
+}
+
+/* Font row */
+/* Font dropdown */
+.font-switcher {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--glass-bg); backdrop-filter: blur(18px);
+    padding: 7px 14px; border-radius: 50px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+}
+.font-select {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 4px 28px 4px 12px;
+    font-size: .75rem;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23c4a030' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color .25s, box-shadow .25s;
+    min-width: 145px;
+}
+.font-select:hover,
+.font-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+.font-select option {
+    background: #0a1628;
+    color: #f0e8d5;
+    font-weight: 600;
 }
 
 /* ============================================================
@@ -640,6 +741,9 @@ body {
     .kpi-row { grid-template-columns: 1fr 1fr; }
     .filter-bar { gap: 10px; }
     .search-wrap { min-width: 100%; }
+    .controls-panel { top: 12px; right: 12px; }
+    .font-select { min-width: 120px; font-size: .7rem; }
+    .ctrl-label { display: none; }
 }
 </style>
 </head>
@@ -652,11 +756,35 @@ body {
     <div class="mesh-orb"></div>
 </div>
 
-<!-- Theme switcher -->
-<div class="theme-switcher">
-    <div class="theme-btn" style="background:#1a3a6e;" title="Dark" onclick="setTheme('dark','this')"></div>
-    <div class="theme-btn" style="background:#1e78dc;" title="Professional" onclick="setTheme('professional','this')"></div>
-    <div class="theme-btn" style="background:linear-gradient(135deg,#8e2de2,#c966ff);" title="Aurora" onclick="setTheme('aurora','this')"></div>
+<!-- Controls panel: themes + fonts -->
+<div class="controls-panel">
+
+    <!-- Theme row -->
+    <div class="theme-switcher">
+        <span class="ctrl-label">Theme</span>
+        <div class="theme-btn active" id="tbtn-dark"
+             style="background:#1a3a6e;"
+             title="Dark" onclick="setTheme('dark')"></div>
+        <div class="theme-btn" id="tbtn-professional"
+             style="background:#1e78dc;"
+             title="Professional" onclick="setTheme('professional')"></div>
+        <div class="theme-btn" id="tbtn-aurora"
+             style="background:linear-gradient(135deg,#8e2de2,#c966ff);"
+             title="Aurora" onclick="setTheme('aurora')"></div>
+    </div>
+
+    <!-- Font dropdown -->
+    <div class="font-switcher">
+        <span class="ctrl-label"><i class="fas fa-font" style="font-size:.65rem"></i> Font</span>
+        <select class="font-select" id="fontSelect" onchange="setFont(this.value)">
+            <option value="arial"   style="font-family:Arial,sans-serif">Arial (Default)</option>
+            <option value="times"   style="font-family:'Times New Roman',serif">Times New Roman</option>
+            <option value="calibri" style="font-family:Calibri,sans-serif">Calibri</option>
+            <option value="gothic"  style="font-family:'Century Gothic',sans-serif">Century Gothic</option>
+            <option value="calisto" style="font-family:'Calisto MT',serif">Calisto MT</option>
+        </select>
+    </div>
+
 </div>
 
 <!-- Top accent line -->
@@ -766,8 +894,25 @@ let dbRaw = [], dbFiltered = [], expandedId = null, isAdding = false;
 function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('bd-theme', theme);
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('tbtn-' + theme);
+    if (btn) btn.classList.add('active');
 }
-setTheme(localStorage.getItem('bd-theme') || 'dark');
+
+/* ------- FONT ------- */
+function setFont(fontKey) {
+    document.documentElement.setAttribute('data-font', fontKey);
+    localStorage.setItem('bd-font', fontKey);
+    /* Sync the dropdown selection */
+    const sel = document.getElementById('fontSelect');
+    if (sel) sel.value = fontKey;
+}
+
+/* Apply saved preferences immediately */
+(function applyPrefs() {
+    setTheme(localStorage.getItem('bd-theme') || 'dark');
+    setFont(localStorage.getItem('bd-font') || 'arial');
+})();
 
 /* ------- INIT ------- */
 async function init() {
