@@ -9,16 +9,57 @@
 
 <style>
 /* ============================================================
-   FONT SYSTEM
-   setFont() injects a #font-override <style> tag at runtime.
-   This default ensures Arial until JS fires.
+   FONT SYSTEM — controlled via data-font on <html>
+   Default: Arial. All fonts are system fonts (no import needed).
    ============================================================ */
-:root { --font: Arial, Helvetica, sans-serif; }
+:root {
+    --body-font: Arial, Helvetica, sans-serif;
+}
 
-html, html * { font-family: var(--font) !important; }
+/* Arial (default) */
+html[data-font="arial"] body,
+html[data-font="arial"] input,
+html[data-font="arial"] select,
+html[data-font="arial"] button,
+html[data-font="arial"] textarea { font-family: Arial, Helvetica, sans-serif; }
+html[data-font="arial"] .site-title,
+html[data-font="arial"] .card-name { font-family: Arial, Helvetica, sans-serif; font-weight: 900; }
 
-/* Numeric data values stay monospace */
-.kpi-val, .m-val { font-family: 'Space Mono', monospace !important; }
+/* Times New Roman */
+html[data-font="times"] body,
+html[data-font="times"] input,
+html[data-font="times"] select,
+html[data-font="times"] button,
+html[data-font="times"] textarea { font-family: 'Times New Roman', Times, serif; }
+html[data-font="times"] .site-title,
+html[data-font="times"] .card-name { font-family: 'Times New Roman', Times, serif; }
+
+/* Calibri */
+html[data-font="calibri"] body,
+html[data-font="calibri"] input,
+html[data-font="calibri"] select,
+html[data-font="calibri"] button,
+html[data-font="calibri"] textarea { font-family: Calibri, 'Carlito', sans-serif; }
+html[data-font="calibri"] .site-title,
+html[data-font="calibri"] .card-name { font-family: Calibri, 'Carlito', sans-serif; font-weight: 800; }
+
+/* Century Gothic */
+html[data-font="gothic"] body,
+html[data-font="gothic"] input,
+html[data-font="gothic"] select,
+html[data-font="gothic"] button,
+html[data-font="gothic"] textarea { font-family: 'Century Gothic', 'AppleGothic', 'Gill Sans', sans-serif; }
+html[data-font="gothic"] .site-title,
+html[data-font="gothic"] .card-name { font-family: 'Century Gothic', 'AppleGothic', 'Gill Sans', sans-serif; font-weight: 700; letter-spacing: 2px; }
+
+/* Calisto MT */
+html[data-font="calisto"] body,
+html[data-font="calisto"] input,
+html[data-font="calisto"] select,
+html[data-font="calisto"] button,
+html[data-font="calisto"] textarea { font-family: 'Calisto MT', 'Bookman Old Style', Georgia, serif; }
+html[data-font="calisto"] .site-title,
+html[data-font="calisto"] .card-name { font-family: 'Calisto MT', 'Bookman Old Style', Georgia, serif; font-style: italic; }
 
 
 :root[data-theme="dark"] {
@@ -38,6 +79,7 @@ html, html * { font-family: var(--font) !important; }
     --mesh2: #0d2847;
     --card-shadow: 0 8px 32px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
     --shimmer: rgba(255,255,255,.04);
+    --body-font: 'Calibri','Carlito',sans-serif;
 }
 :root[data-theme="professional"] {
     --bg-base: #f0f4fb;
@@ -56,6 +98,7 @@ html, html * { font-family: var(--font) !important; }
     --mesh2: #b8ceee;
     --card-shadow: 0 6px 24px rgba(30,80,160,.12), inset 0 1px 0 rgba(255,255,255,.9);
     --shimmer: rgba(30,120,220,.04);
+    --body-font: 'Calibri','Carlito',sans-serif;
 }
 :root[data-theme="aurora"] {
     --bg-base: #08051a;
@@ -74,6 +117,7 @@ html, html * { font-family: var(--font) !important; }
     --mesh2: #160838;
     --card-shadow: 0 8px 32px rgba(100,0,180,.4), inset 0 1px 0 rgba(255,255,255,.06);
     --shimmer: rgba(180,80,255,.05);
+    --body-font: 'Calibri','Carlito',sans-serif;
 }
 
 /* ============================================================
@@ -84,7 +128,7 @@ html, html * { font-family: var(--font) !important; }
 }
 html { scroll-behavior: smooth; }
 body {
-    font-family: var(--font);
+    font-family: Arial, Helvetica, sans-serif;
     background-color: var(--bg-base);
     color: var(--text-main);
     min-height: 100vh;
@@ -252,7 +296,7 @@ body {
 .logo-ring img { height: 76px; filter: drop-shadow(0 0 14px var(--accent)); }
 
 .site-title {
-
+    font-family: 'Playfair Display', serif;
     font-size: clamp(1.9rem, 4vw, 3rem);
     font-weight: 900;
     letter-spacing: 2px;
@@ -370,7 +414,7 @@ body {
     width: 100%; padding: 13px 18px 13px 46px;
     border-radius: 13px; border: 1px solid var(--glass-border);
     background: rgba(255,255,255,.07); color: var(--text-main);
-    font-size: .95rem; font-weight: 500;
+    font-family: 'DM Sans', sans-serif; font-size: .95rem; font-weight: 500;
     outline: none; transition: border-color .3s, box-shadow .3s;
 }
 .search-wrap input::placeholder { color: var(--text-dim); }
@@ -381,7 +425,7 @@ body {
     flex: 1; min-width: 190px; padding: 13px 16px;
     border-radius: 13px; border: 1px solid var(--glass-border);
     background: rgba(255,255,255,.07); color: var(--text-main);
-    font-size: .9rem; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 600;
     cursor: pointer; outline: none;
     transition: border-color .3s;
     -webkit-appearance: none; appearance: none;
@@ -398,7 +442,7 @@ body {
     padding: 13px 26px; border-radius: 13px;
     border: 1px solid var(--danger);
     background: rgba(255,75,92,.12); color: var(--danger);
-    font-weight: 700; font-size: .88rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .88rem;
     letter-spacing: .8px; cursor: pointer; text-transform: uppercase;
     transition: background .3s, transform .2s;
     display: flex; align-items: center; gap: 8px;
@@ -409,7 +453,7 @@ body {
     padding: 13px 26px; border-radius: 13px;
     border: 1px solid var(--accent);
     background: rgba(196,160,48,.15); color: var(--accent);
-    font-weight: 700; font-size: .88rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .88rem;
     letter-spacing: .8px; cursor: pointer; text-transform: uppercase;
     transition: background .3s, transform .2s;
     display: flex; align-items: center; gap: 8px;
@@ -481,7 +525,7 @@ body {
 
 .card-title-wrap {}
 .card-name {
-
+    font-family: 'Playfair Display', serif;
     font-size: 1.25rem; font-weight: 700;
     color: var(--accent); line-height: 1.2; margin-bottom: 3px;
 }
@@ -537,7 +581,7 @@ body {
 }
 .card-btn {
     flex: 1; padding: 10px 12px; border-radius: 12px; border: none; cursor: pointer;
-    font-weight: 700; font-size: .78rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .78rem;
     letter-spacing: .8px; text-transform: uppercase;
     display: flex; align-items: center; justify-content: center; gap: 7px;
     transition: transform .2s, opacity .2s, box-shadow .2s;
@@ -572,7 +616,7 @@ body {
     animation: zoomIn .3s cubic-bezier(.22,1,.36,1);
 }
 .modal-title {
-    font-size: 1.5rem; font-weight: 900;
+    font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900;
     color: var(--accent); display: flex; align-items: center; gap: 12px;
     padding-bottom: 18px; margin-bottom: 28px;
     border-bottom: 1px solid var(--glass-border);
@@ -589,7 +633,7 @@ body {
     width: 100%; padding: 12px 16px;
     background: rgba(255,255,255,.06); color: var(--text-main);
     border: 1px solid var(--glass-border); border-radius: 12px;
-    font-size: .92rem; font-weight: 500;
+    font-family: 'DM Sans', sans-serif; font-size: .92rem; font-weight: 500;
     outline: none; transition: border-color .3s, box-shadow .3s;
 }
 .form-field input:focus, .form-field textarea:focus {
@@ -600,7 +644,7 @@ body {
 .btn-save {
     flex: 2; padding: 14px; border-radius: 13px; border: none; cursor: pointer;
     background: linear-gradient(135deg, var(--accent), #e8c040);
-    color: #000;
+    color: #000; font-family: 'DM Sans', sans-serif;
     font-weight: 800; font-size: .95rem; letter-spacing: 1px; text-transform: uppercase;
     transition: transform .2s, box-shadow .2s;
 }
@@ -608,7 +652,7 @@ body {
 .btn-cancel {
     flex: 1; padding: 14px; border-radius: 13px; cursor: pointer;
     background: rgba(255,255,255,.06); color: var(--text-dim);
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--glass-border); font-family: 'DM Sans', sans-serif;
     font-weight: 700; font-size: .9rem; transition: background .3s;
 }
 .btn-cancel:hover { background: rgba(255,255,255,.12); }
@@ -637,7 +681,7 @@ body {
     color: var(--text-dim);
 }
 .empty-state i { font-size: 3.5rem; color: var(--glass-border); margin-bottom: 18px; display: block; }
-.empty-state h3 { font-size: 1.4rem; margin-bottom: 8px; color: var(--text-main); opacity: .6; }
+.empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; color: var(--text-main); opacity: .6; }
 
 /* ============================================================
    SECTION DIVIDER / LABEL
@@ -647,7 +691,7 @@ body {
     margin-bottom: 22px;
 }
 .section-label span {
-
+    font-family: 'Playfair Display', serif;
     font-size: 1.05rem; color: var(--text-dim); white-space: nowrap;
 }
 .section-label::before, .section-label::after {
@@ -856,39 +900,10 @@ function setTheme(theme) {
 }
 
 /* ------- FONT ------- */
-const FONT_STACKS = {
-    arial:   'Arial, Helvetica, sans-serif',
-    times:   '"Times New Roman", Times, serif',
-    calibri: 'Calibri, Carlito, sans-serif',
-    gothic:  '"Century Gothic", AppleGothic, "Gill Sans", sans-serif',
-    calisto: '"Calisto MT", "Bookman Old Style", Georgia, serif'
-};
-
-/* Inject / update a dedicated <style> tag that overrides everything */
 function setFont(fontKey) {
-    const stack = FONT_STACKS[fontKey] || FONT_STACKS.arial;
-
-    /* 1. Update the CSS variable (for var(--font) references) */
-    document.documentElement.style.setProperty('--font', stack);
-
-    /* 2. Inject an override <style> tag — highest possible author-level specificity */
-    let tag = document.getElementById('font-override');
-    if (!tag) {
-        tag = document.createElement('style');
-        tag.id = 'font-override';
-        document.head.appendChild(tag);
-    }
-    tag.textContent = `
-        html, html * {
-            font-family: ${stack} !important;
-        }
-        .kpi-val, .m-val {
-            font-family: 'Space Mono', monospace !important;
-        }
-    `;
-
-    /* 3. Save preference & sync dropdown */
+    document.documentElement.setAttribute('data-font', fontKey);
     localStorage.setItem('bd-font', fontKey);
+    /* Sync the dropdown selection */
     const sel = document.getElementById('fontSelect');
     if (sel) sel.value = fontKey;
 }
