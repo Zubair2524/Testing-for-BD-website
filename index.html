@@ -802,13 +802,13 @@ function render() {
     document.getElementById('countTotal').textContent    = dbRaw.length;
     document.getElementById('countFiltered').textContent = dbFiltered.length;
 
-    if(!dbFiltered.length) {
+    if (!dbFiltered.length) {
         grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No Results Found</h3><p>Try a different keyword or reset filters.</p></div>`;
         return;
     }
 
     grid.innerHTML = dbFiltered.map((p, i) => {
-        const isExp = expandedId === p.ProductName;
+        const isExp    = expandedId === p.ProductName;
         const formIcon = getFormIcon(p.DosageForm);
 
         const extraHTML = isExp ? `
@@ -820,8 +820,11 @@ function render() {
                     </div>`).join('')}
             </div>` : '';
 
+        /* Use data-idx (index into dbFiltered) to avoid any
+           character-escaping problems with product names in
+           inline onclick attributes. */
         return `
-        <div class="p-card ${isExp ? 'expanded' : ''}" style="animation-delay:${i*0.045}s">
+        <div class="p-card ${isExp ? 'expanded' : ''}" style="animation-delay:${i * 0.045}s">
             <div class="card-header">
                 <div class="form-icon"><i class="fas ${formIcon}"></i></div>
                 <div class="card-title-wrap">
@@ -834,98 +837,105 @@ function render() {
             <div class="ind-tag"><i class="fas fa-tag" style="font-size:.65rem"></i>${p.Indication || 'Therapeutic Area'}</div>
 
             <div class="matrix">
-                <div class="m-cell">
-                    <div class="m-lab">Market Value</div>
-                    <div class="m-val">${p.MATValue || '0'}</div>
-                </div>
-                <div class="m-cell">
-                    <div class="m-lab">Value Growth</div>
-                    <div class="m-val">${fmtG(p.ValueGrowth)}</div>
-                </div>
-                <div class="m-cell">
-                    <div class="m-lab">Unit Sale</div>
-                    <div class="m-val">${p.UnitSale || '0'}</div>
-                </div>
-                <div class="m-cell">
-                    <div class="m-lab">Unit Growth</div>
-                    <div class="m-val">${fmtG(p.UnitGrowth)}</div>
-                </div>
+                <div class="m-cell"><div class="m-lab">Market Value</div><div class="m-val">${p.MATValue || '0'}</div></div>
+                <div class="m-cell"><div class="m-lab">Value Growth</div><div class="m-val">${fmtG(p.ValueGrowth)}</div></div>
+                <div class="m-cell"><div class="m-lab">Unit Sale</div><div class="m-val">${p.UnitSale || '0'}</div></div>
+                <div class="m-cell"><div class="m-lab">Unit Growth</div><div class="m-val">${fmtG(p.UnitGrowth)}</div></div>
             </div>
 
             ${extraHTML}
 
             <div class="btn-row">
-                <button class="card-btn btn-expand" onclick="toggleDetails(${JSON.stringify(p.ProductName)})">
+                <button class="card-btn btn-expand" data-idx="${i}">
                     <i class="fas ${isExp ? 'fa-compress-alt' : 'fa-expand-alt'}"></i>
                     ${isExp ? 'Compact' : 'Expand'}
                 </button>
-                <button class="card-btn btn-edit" onclick="handleAuth('EDIT', ${JSON.stringify(p.ProductName)})">
+                <button class="card-btn btn-edit" data-idx="${i}">
                     <i class="fas fa-pen"></i> Edit
                 </button>
-                <button class="card-btn btn-del" onclick="handleAuth('DELETE', ${JSON.stringify(p.ProductName)})">
+                <button class="card-btn btn-del" data-idx="${i}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
         </div>`;
     }).join('');
+
+    /* Attach events after DOM is ready — no inline onclick needed */
+    document.querySelectorAll('.btn-expand').forEach(btn => {
+        btn.addEventListener('click', function() {
+            toggleDetails(dbFiltered[+this.dataset.idx].ProductName);
+        });
+    });
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', function() {
+            handleAuth('EDIT', dbFiltered[+this.dataset.idx].ProductName);
+        });
+    });
+    document.querySelectorAll('.btn-del').forEach(btn => {
+        btn.addEventListener('click', function() {
+            handleAuth('DELETE', dbFiltered[+this.dataset.idx].ProductName);
+        });
+    });
 }
 
-/* ------- TOGGLE EXPAND ------- */
+/* ------- TOGGLE EXPAND — identical to original ------- */
 function toggleDetails(name) {
     expandedId = (expandedId === name) ? null : name;
     render();
-    if(expandedId) {
+    if (expandedId) {
         setTimeout(() => {
             const el = document.querySelector('.expanded');
-            if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 120);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
     }
 }
 
 /* ------- ICONS ------- */
 function getFormIcon(form) {
     const f = (form || '').toLowerCase();
-    if(f.includes('suspension') || f.includes('syrup') || f.includes('liq')) return 'fa-prescription-bottle-alt';
-    if(f.includes('inj') || f.includes('vial') || f.includes('infusion')) return 'fa-syringe';
-    if(f.includes('tab')) return 'fa-tablets';
-    if(f.includes('cap')) return 'fa-capsules';
+    if (f.includes('suspension') || f.includes('syrup') || f.includes('liq')) return 'fa-prescription-bottle-alt';
+    if (f.includes('inj') || f.includes('vial') || f.includes('infusion'))    return 'fa-syringe';
+    if (f.includes('tab')) return 'fa-tablets';
+    if (f.includes('cap')) return 'fa-capsules';
     return 'fa-box-open';
 }
 
 const fmtG = v => (!v || isNaN(v)) ? (v || '0') : `${v}%`;
 
-/* ------- AUTH GATE ------- */
+/* ------- AUTH GATE — identical to original ------- */
 function handleAuth(action, name) {
-    const pass = prompt('Admin Password:');
-    if(pass !== ADMIN_PASS) { showToast('Unauthorized.', true); return; }
-    if(action === 'EDIT') openEditModal(name);
-    else if(action === 'DELETE') {
-        if(confirm(`Delete "${name}"?`)) syncToCloud({ ProductName: name, action: 'DELETE' });
+    const pass = prompt("Admin Password:");
+    if (pass !== ADMIN_PASS) { alert("Unauthorized."); return; }
+
+    if (action === 'EDIT') {
+        /* Populate and show the edit modal — same as original */
+        const p = dbRaw.find(x => x.ProductName === name);
+        if (!p) return;
+        isAdding = false;
+        document.getElementById('modalTitle').innerHTML = `<i class="fas fa-edit"></i> Modify Record`;
+        document.getElementById('btnSave').innerHTML    = `<i class="fas fa-save"></i> Update Record`;
+        document.getElementById('formContainer').innerHTML = Object.entries(p).map(([k, v]) => `
+            <div class="form-field">
+                <label>${k}</label>
+                <input type="text" id="inp_${k}" value="${(v || '').toString().replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">
+            </div>`).join('');
+        document.getElementById('editModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+    } else if (action === 'DELETE') {
+        /* confirm() then delete — same as original */
+        if (confirm(`Delete "${name}"?`)) {
+            syncToCloud({ ProductName: name, action: "DELETE" });
+        }
     }
 }
 
-/* ------- MODAL: EDIT ------- */
-function openEditModal(name) {
-    isAdding = false;
-    const p = dbRaw.find(x => x.ProductName === name);
-    document.getElementById('modalTitle').innerHTML = `<i class="fas fa-pen"></i> Modify Record`;
-    document.getElementById('btnSave').innerHTML     = `<i class="fas fa-save"></i> Update Record`;
-    document.getElementById('formContainer').innerHTML = Object.entries(p).map(([k,v]) => `
-        <div class="form-field">
-            <label>${k.replace(/([A-Z])/g,' $1').trim()}</label>
-            <input type="text" id="inp_${k}" value="${(v||'').toString().replace(/"/g,'&quot;')}">
-        </div>`).join('');
-    document.getElementById('editModal').style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
-
-/* ------- MODAL: ADD NEW ------- */
+/* ------- ADD NEW ------- */
 function openAddModal() {
-    const pass = prompt('Admin Password:');
-    if(pass !== ADMIN_PASS) { showToast('Unauthorized.', true); return; }
+    const pass = prompt("Admin Password:");
+    if (pass !== ADMIN_PASS) { alert("Unauthorized."); return; }
     isAdding = true;
 
-    /* derive keys from first record or default set */
     const keys = dbRaw.length
         ? Object.keys(dbRaw[0])
         : ['ProductName','Composition','Indication','DosageForm','MATValue','ValueGrowth','UnitSale','UnitGrowth','TeamName','SpecialNote'];
@@ -934,7 +944,7 @@ function openAddModal() {
     document.getElementById('btnSave').innerHTML    = `<i class="fas fa-plus"></i> Add Record`;
     document.getElementById('formContainer').innerHTML = keys.map(k => `
         <div class="form-field">
-            <label>${k.replace(/([A-Z])/g,' $1').trim()}</label>
+            <label>${k}</label>
             <input type="text" id="inp_${k}" placeholder="${k}">
         </div>`).join('');
     document.getElementById('editModal').style.display = 'block';
@@ -946,26 +956,26 @@ function closeModal() {
     document.getElementById('editModal').style.display = 'none';
     document.body.style.overflow = '';
 }
-function modalOverlayClick(e) { if(e.target === document.getElementById('editModal')) closeModal(); }
+function modalOverlayClick(e) { if (e.target === document.getElementById('editModal')) closeModal(); }
 
-/* ------- SAVE ------- */
+/* ------- SAVE — identical to original ------- */
 async function saveRecord() {
     const payload = {};
     document.querySelectorAll('[id^="inp_"]').forEach(el => {
         payload[el.id.replace('inp_', '')] = el.value;
     });
-    if(isAdding) payload.action = 'ADD';
+    if (isAdding) payload.action = 'ADD';
     await syncToCloud(payload);
 }
 
-/* ------- SYNC ------- */
+/* ------- SYNC — identical to original ------- */
 async function syncToCloud(payload) {
     try {
-        await fetch(API_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(payload) });
-        showToast('Record saved successfully!');
-        setTimeout(() => location.reload(), 1400);
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        alert("Success.");
+        location.reload();
     } catch(e) {
-        showToast('Sync failed. Try again.', true);
+        alert("Failed.");
     }
 }
 
@@ -982,11 +992,12 @@ function applyFilters() {
 function clearFilters() {
     document.getElementById('mainSearch').value = '';
     document.getElementById('filterNote').value = '';
-    dbFiltered = [...dbRaw]; render();
+    dbFiltered = [...dbRaw];
+    render();
 }
 
 /* ------- TOAST ------- */
-function showToast(msg, isError=false) {
+function showToast(msg, isError = false) {
     const t = document.getElementById('toast');
     t.querySelector('#toastMsg').textContent = msg;
     t.querySelector('i').className = isError ? 'fas fa-times-circle' : 'fas fa-check-circle';
@@ -995,11 +1006,9 @@ function showToast(msg, isError=false) {
     setTimeout(() => t.classList.remove('show'), 3200);
 }
 
-/* ------- EVENT LISTENERS ------- */
+/* ------- EVENT LISTENERS & BOOT ------- */
 document.getElementById('mainSearch').addEventListener('input', applyFilters);
 document.getElementById('filterNote').addEventListener('change', applyFilters);
-
-/* ------- BOOT ------- */
 window.onload = init;
 </script>
 </body>
